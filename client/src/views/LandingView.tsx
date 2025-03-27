@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import LandingCard from "@/components/landing/LandingCard";
 
-export default function Landing() {
+export default function LandingView() {
   return (
     <div className="flex flex-col h-screen">
       <div className="flex flex-col justify-end gap-8 h-[40%] p-10 bg-primary">
