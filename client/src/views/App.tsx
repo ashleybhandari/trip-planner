@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 
 import Budget from "@/views/Budget";
-import Checklist from "@/views/Checklist";
 import Itinerary from "@/views/Itinerary";
 import Landing from "@/views/Landing";
 import Map from "@/views/Map";
@@ -18,7 +17,6 @@ function App() {
           <Route path="itinerary" element={<Itinerary />} />
           <Route path="map" element={<Map />} />
           <Route path="budget" element={<Budget />} />
-          <Route path="checklist" element={<Checklist />} />
         </Route>
       </Routes>
     </BrowserRouter>
