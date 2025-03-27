@@ -1,24 +1,24 @@
 import { BrowserRouter, Routes, Route } from "react-router";
 
-import Budget from "@/views/Budget";
-import Checklist from "@/views/Checklist";
-import Itinerary from "@/views/Itinerary";
-import Landing from "@/views/Landing";
-import Map from "@/views/Map";
-import MyTrip from "@/views/MyTrip";
-import TripLayout from "@/components/layout/TripLayout";
+import BudgetView from "@/views/BudgetView";
+import ChecklistView from "@/views/ChecklistView";
+import ItineraryView from "@/views/ItineraryView";
+import LandingView from "@/views/LandingView";
+import MapView from "@/views/MapView";
+import MyTripView from "@/views/MyTripView";
+import TripLayoutView from "@/components/layout/TripLayout";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="trip" element={<TripLayout />}>
-          <Route index element={<MyTrip />} />
-          <Route path="itinerary" element={<Itinerary />} />
-          <Route path="map" element={<Map />} />
-          <Route path="budget" element={<Budget />} />
-          <Route path="checklist" element={<Checklist />} />
+        <Route path="/" element={<LandingView />} />
+        <Route path="trip" element={<TripLayoutView />}>
+          <Route index element={<MyTripView />} />
+          <Route path="itinerary" element={<ItineraryView />} />
+          <Route path="map" element={<MapView />} />
+          <Route path="budget" element={<BudgetView />} />
+          <Route path="checklist" element={<ChecklistView />} />
         </Route>
       </Routes>
     </BrowserRouter>
