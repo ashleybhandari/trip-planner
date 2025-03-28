@@ -1,5 +1,5 @@
 import { Outlet } from "react-router";
-import { TripSidebar } from "@/components/layout/TripSidebar";
+import { TripSidebar } from "@/components/layout/sidebar/TripSidebar";
 
 export default function TripLayout() {
   return (
