@@ -1,17 +1,13 @@
 import { cn } from "@/lib/utils";
 import { NavLink } from "react-router";
 
-type TripSidebarItemProps = {
+type SidebarItemProps = {
   link: string;
   children: React.ReactNode;
   className?: string;
 };
 
-export function TripSidebarItem({
-  link,
-  children,
-  className,
-}: TripSidebarItemProps) {
+export function SidebarItem({ link, children, className }: SidebarItemProps) {
   return (
     <NavLink
       to={link}

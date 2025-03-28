@@ -2,10 +2,11 @@ import { cn } from "@/lib/utils";
 import { useLocation } from "react-router";
 import { useEffect, useState } from "react";
 
-import { TripSidebarItem } from "./TripSidebarItem";
+import { SidebarItem } from "./SidebarItem";
 import { SIDEBAR_ITEMS } from "./sidebar-items";
+import { SidebarChecklists } from "./SidebarChecklists";
 
-export function TripSidebar() {
+export function Sidebar() {
   const [selected, setSelected] = useState("");
   const location = useLocation();
 
@@ -17,7 +18,7 @@ export function TripSidebar() {
     <nav className="h-screen flex flex-col p-2 w-52 bg-secondary">
       <div className="grow flex flex-col gap-2">
         {SIDEBAR_ITEMS.map(({ link, label }) => (
-          <TripSidebarItem
+          <SidebarItem
             key={label}
             link={link}
             className={cn({
@@ -26,22 +27,23 @@ export function TripSidebar() {
             })}
           >
             {label}
-          </TripSidebarItem>
+          </SidebarItem>
         ))}
+        <SidebarChecklists />
       </div>
       <div className="flex flex-col gap-2">
-        <TripSidebarItem
+        <SidebarItem
           link="/"
           className="bg-on-primary text-on-primary-container text-sm font-medium justify-center"
         >
           Back to Dashboard
-        </TripSidebarItem>
-        <TripSidebarItem
+        </SidebarItem>
+        <SidebarItem
           link="/"
           className="bg-secondary-container text-on-secondary-container text-sm font-medium justify-center"
         >
           Sign Out
-        </TripSidebarItem>
+        </SidebarItem>
       </div>
     </nav>
   );

@@ -1,10 +1,10 @@
 import { Outlet } from "react-router";
-import { TripSidebar } from "@/components/layout/sidebar/TripSidebar";
+import { Sidebar } from "@/components/layout/sidebar/Sidebar";
 
 export default function TripLayout() {
   return (
     <div className="flex">
-      <TripSidebar />
+      <Sidebar />
       <main className="grow flex justify-center">
         <Outlet />
       </main>
