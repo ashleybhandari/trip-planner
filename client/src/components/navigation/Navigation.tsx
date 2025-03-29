@@ -1,15 +1,15 @@
 import { cn } from "@/lib/utils";
-import { SidebarChecklists } from "./SidebarChecklists";
-import { SidebarFooter } from "./SidebarFooter";
-import { SidebarPages } from "./SidebarPages";
+import { NavChecklists } from "./NavChecklists";
+import { NavFooter } from "./NavFooter";
+import { NavPages } from "./NavPages";
 
-type SidebarProps = {
+type NavigationProps = {
   className?: string;
 };
 
 // Navigation menu containing pages, checklists, and buttons to go to dashboard
 // and sign out
-export function Sidebar({ className }: SidebarProps) {
+export function Navigation({ className }: NavigationProps) {
   return (
     <div
       className={cn(
@@ -18,10 +18,10 @@ export function Sidebar({ className }: SidebarProps) {
       )}
     >
       <div className="grow flex flex-col justify-between gap-4 my-2">
-        <SidebarPages />
-        <SidebarChecklists />
+        <NavPages />
+        <NavChecklists />
       </div>
-      <SidebarFooter />
+      <NavFooter />
     </div>
   );
 }

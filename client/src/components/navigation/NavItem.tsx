@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { NavLink } from "react-router";
 
-type SidebarItemProps = {
+type NavItemProps = {
   link: string;
   children: React.ReactNode;
   isSelected?: boolean;
@@ -10,13 +10,13 @@ type SidebarItemProps = {
 };
 
 // Styled button/link for the navigation menu
-export function SidebarItem({
+export function NavItem({
   link,
   children,
   isSelected,
   onClick,
   className,
-}: SidebarItemProps) {
+}: NavItemProps) {
   return (
     <NavLink
       to={link}

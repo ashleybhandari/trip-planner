@@ -1,21 +1,21 @@
-import { SidebarItem } from "./SidebarItem";
+import { NavItem } from "./NavItem";
 
 // Buttons to return to dashboard and sign out
-export function SidebarFooter() {
+export function NavFooter() {
   return (
     <div className="flex flex-col gap-2 text-sm">
-      <SidebarItem
+      <NavItem
         link="/"
         className="font-medium justify-center bg-on-primary text-on-primary-container"
       >
         Back to Dashboard
-      </SidebarItem>
-      <SidebarItem
+      </NavItem>
+      <NavItem
         link="/"
         className="font-medium justify-center bg-secondary-container text-on-secondary-container hover:bg-error-container active:bg-error-container/90"
       >
         Sign Out
-      </SidebarItem>
+      </NavItem>
     </div>
   );
 }

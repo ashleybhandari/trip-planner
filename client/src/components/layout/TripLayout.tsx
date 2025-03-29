@@ -2,7 +2,7 @@ import { Outlet, useLocation, useParams } from "react-router";
 import { useEffect, useState } from "react";
 
 import { HamburgerMenu } from "@/components/navigation/HamburgerMenu";
-import { Sidebar } from "@/components/navigation/Sidebar";
+import { Navigation } from "@/components/navigation/Navigation";
 
 import { Checklist } from "@/types/Checklist";
 import { MOCK_CHECKLISTS } from "@/mock-data/mock-checklists";
@@ -33,8 +33,8 @@ export default function TripLayout() {
     setChecklists(MOCK_CHECKLISTS);
   }, [setChecklists]);
 
-  // when the screen is small, use hamburger menu (and if menu is open, hide
-  // the rest of the page)
+  // Navigation + page content. When the screen is small, move navigation into
+  // a hamburger menu (and if menu is open, hide the rest of the page).
   return (
     <NavContext.Provider
       value={{ selected, setSelected, checklists, setChecklists }}
@@ -44,7 +44,7 @@ export default function TripLayout() {
           setPageVisible={setPageVisible}
           className="flex md:hidden"
         />
-        <Sidebar className="hidden md:flex w-60" />
+        <Navigation className="hidden md:flex w-60" />
         {pageVisible && (
           <main className="grow flex justify-center">
             <Outlet />

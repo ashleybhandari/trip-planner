@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
-import { Sidebar } from "./Sidebar";
 import { AlignLeft, X } from "lucide-react";
+import { Navigation } from "./Navigation";
 
 type HamburgerMenuProps = {
   setPageVisible: (state: boolean) => void;
@@ -28,7 +28,7 @@ export function HamburgerMenu({
           <button onClick={() => setIsOpen(false)} className="cursor-pointer">
             <X />
           </button>
-          <Sidebar className="px-10 py-5 grow" />
+          <Navigation className="px-10 py-5 grow" />
         </div>
       ) : (
         <button onClick={() => setIsOpen(true)} className="p-3 cursor-pointer">
