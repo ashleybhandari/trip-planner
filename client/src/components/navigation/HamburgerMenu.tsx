@@ -1,7 +1,8 @@
 import { cn } from "@/lib/utils";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AlignLeft, X } from "lucide-react";
 import { Navigation } from "./Navigation";
+import { NavContext } from "@/Contexts";
 
 type HamburgerMenuProps = {
   setPageVisible: (state: boolean) => void;
@@ -15,11 +16,20 @@ export function HamburgerMenu({
   className,
 }: HamburgerMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
+  const { selected } = useContext(NavContext);
 
   // Hide page when menu is open, show when closed
   useEffect(() => {
     setPageVisible(!isOpen);
   }, [setPageVisible, isOpen]);
+
+  // Close menu and show page when something is selected
+  useEffect(() => {
+    if (isOpen) {
+      setIsOpen(false);
+      setPageVisible(true);
+    }
+  }, [selected]);
 
   return (
     <div className={cn("bg-secondary text-on-secondary", className)}>
