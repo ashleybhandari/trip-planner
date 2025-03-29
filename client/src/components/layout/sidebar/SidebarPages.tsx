@@ -17,7 +17,7 @@ export function SidebarPages() {
   const handleAddChecklist = () => {
     const id = generateRandomString(5);
 
-    setChecklists((prev) => [...prev, { id, name: "new checklist" }]);
+    setChecklists((prev) => [{ id, name: "new checklist" }, ...prev]);
     setSelected(id);
     navigate(`checklist/${id}`);
   };
@@ -27,7 +27,7 @@ export function SidebarPages() {
   }, []);
 
   return (
-    <div className="grow">
+    <div className="grow flex flex-col justify-between gap-4 my-2">
       <nav className="flex flex-col gap-2">
         {SIDEBAR_MAIN_PAGES.map(({ link, label }) => (
           <SidebarItem
@@ -40,7 +40,7 @@ export function SidebarPages() {
           </SidebarItem>
         ))}
       </nav>
-      <div className="mt-10">
+      <div>
         <div className="flex justify-between items-center m-3 text-on-secondary">
           <span className="text-sm">checklists</span>
           <button
@@ -50,14 +50,14 @@ export function SidebarPages() {
             <Plus size={12} />
           </button>
         </div>
-        <nav className="flex flex-col gap-1">
+        <nav className="h-64 overflow-y-auto">
           {checklists.map(({ id, name }) => (
             <SidebarItem
               key={id}
               link={`checklist/${id}`}
               isSelected={selected === id}
               onClick={() => setSelected(id)}
-              className="h-8"
+              className="h-8 mb-1"
             >
               {name}
             </SidebarItem>
