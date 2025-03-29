@@ -1,3 +1,6 @@
+import { useParams } from "react-router";
+
 export default function ChecklistView() {
-  return <p>checklist</p>;
+  const { checklistId } = useParams();
+  return <p>checklist id: {checklistId}</p>;
 }

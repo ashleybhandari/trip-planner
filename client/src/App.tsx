@@ -13,12 +13,12 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingView />} />
-        <Route path="trip" element={<TripLayoutView />}>
-          <Route index element={<MyTripView />} />
+        <Route path="trip/:tripId" element={<TripLayoutView />}>
+          <Route path="summary" element={<MyTripView />} />
           <Route path="itinerary" element={<ItineraryView />} />
           <Route path="map" element={<MapView />} />
           <Route path="budget" element={<BudgetView />} />
-          <Route path="checklist" element={<ChecklistView />} />
+          <Route path="checklist/:checklistId" element={<ChecklistView />} />
         </Route>
       </Routes>
     </BrowserRouter>
