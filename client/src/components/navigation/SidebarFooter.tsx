@@ -1,5 +1,6 @@
 import { SidebarItem } from "./SidebarItem";
 
+// Buttons to return to dashboard and sign out
 export function SidebarFooter() {
   return (
     <div className="flex flex-col gap-2 text-sm">

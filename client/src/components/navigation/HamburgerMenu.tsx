@@ -7,12 +7,16 @@ type HamburgerMenuProps = {
   setPageVisible: (state: boolean) => void;
   className?: string;
 };
+
+// Top navbar with a hamburger button. Clicking the button opens a full-screen
+// navigation menu.
 export function HamburgerMenu({
   setPageVisible,
   className,
 }: HamburgerMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
 
+  // Hide page when menu is open, show when closed
   useEffect(() => {
     setPageVisible(!isOpen);
   }, [setPageVisible, isOpen]);

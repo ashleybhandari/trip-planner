@@ -5,6 +5,8 @@ import { SidebarItem } from "./SidebarItem";
 import { generateRandomString } from "@/utils/generate-random-string";
 import { NavContext } from "@/Contexts";
 
+// "checklists" header with button to create a checklist, followed by a list of
+// selectable checklists.
 export function SidebarChecklists() {
   const { selected, setSelected, checklists, setChecklists } =
     useContext(NavContext);
@@ -13,11 +15,14 @@ export function SidebarChecklists() {
   const handleAddChecklist = () => {
     const id = generateRandomString(5);
 
+    // create new checklist and select it in the sidebar
     setChecklists((prev) => [{ id, name: "new checklist" }, ...prev]);
     setSelected(id);
+
+    // navigate to the new checklist
     navigate(`checklist/${id}`);
   };
-
+  
   return (
     <div>
       <div className="flex justify-between items-center m-3 text-on-secondary">

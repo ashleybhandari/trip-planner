@@ -9,6 +9,7 @@ type SidebarItemProps = {
   className?: string;
 };
 
+// Styled button/link for the navigation menu
 export function SidebarItem({
   link,
   children,

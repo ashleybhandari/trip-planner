@@ -7,6 +7,8 @@ type SidebarProps = {
   className?: string;
 };
 
+// Navigation menu containing pages, checklists, and buttons to go to dashboard
+// and sign out
 export function Sidebar({ className }: SidebarProps) {
   return (
     <div

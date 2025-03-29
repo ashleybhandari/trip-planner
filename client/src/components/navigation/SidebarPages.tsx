@@ -3,6 +3,7 @@ import { SidebarItem } from "./SidebarItem";
 import { NavContext } from "@/Contexts";
 import { PAGES } from "./pages";
 
+// Selectable pages (excl. checklists)
 export function SidebarPages() {
   const { selected, setSelected } = useContext(NavContext);
 
@@ -12,8 +13,8 @@ export function SidebarPages() {
         <SidebarItem
           key={label}
           link={link}
-          isSelected={selected === label}
-          onClick={() => setSelected(label)}
+          isSelected={selected === link}
+          onClick={() => setSelected(link)}
         >
           {label}
         </SidebarItem>
