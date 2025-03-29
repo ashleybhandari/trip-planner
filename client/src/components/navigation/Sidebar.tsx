@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils";
+import { SidebarChecklists } from "./SidebarChecklists";
 import { SidebarFooter } from "./SidebarFooter";
 import { SidebarPages } from "./SidebarPages";
 
@@ -14,7 +15,10 @@ export function Sidebar({ className }: SidebarProps) {
         className
       )}
     >
-      <SidebarPages />
+      <div className="grow flex flex-col justify-between gap-4 my-2">
+        <SidebarPages />
+        <SidebarChecklists />
+      </div>
       <SidebarFooter />
     </div>
   );

@@ -1,4 +1,4 @@
-export const SIDEBAR_MAIN_PAGES = [
+export const PAGES = [
   { label: "My Trip", link: "" },
   { label: "Itinerary", link: "itinerary" },
   { label: "Map", link: "map" },

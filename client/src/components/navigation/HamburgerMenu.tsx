@@ -20,14 +20,14 @@ export function HamburgerMenu({
   return (
     <div className={cn("bg-secondary text-on-secondary", className)}>
       {isOpen ? (
-        <div className="flex flex-col w-screen h-screen p-10">
+        <div className="flex flex-col w-screen h-screen p-3">
           <button onClick={() => setIsOpen(false)} className="cursor-pointer">
             <X />
           </button>
           <Sidebar className="px-10 py-5 grow" />
         </div>
       ) : (
-        <button onClick={() => setIsOpen(true)} className="p-2 cursor-pointer">
+        <button onClick={() => setIsOpen(true)} className="p-3 cursor-pointer">
           <AlignLeft />
         </button>
       )}
