@@ -50,7 +50,7 @@ export function SidebarPages() {
             <Plus size={12} />
           </button>
         </div>
-        <nav className="h-64 overflow-y-auto">
+        <nav className="h-44 md:h-64 overflow-y-auto">
           {checklists.map(({ id, name }) => (
             <SidebarItem
               key={id}
