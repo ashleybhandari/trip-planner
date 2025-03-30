@@ -7,18 +7,24 @@ import LandingView from "@/views/LandingView";
 import MapView from "@/views/MapView";
 import MyTripView from "@/views/MyTripView";
 import TripLayoutView from "@/components/layout/TripLayout";
+import ProtectedRoute from "@/components/auth/ProtectedRoute";
+import AuthCallbackView from "@/views/AuthCallbackView";
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<LandingView />} />
+        <Route path="/auth/callback" element={<AuthCallbackView />} />
+        <Route element={<ProtectedRoute />}>
+        {/* add all protected routes here */}
         <Route path="trip/:tripId" element={<TripLayoutView />}>
           <Route path="summary" element={<MyTripView />} />
           <Route path="itinerary" element={<ItineraryView />} />
           <Route path="map" element={<MapView />} />
           <Route path="budget" element={<BudgetView />} />
           <Route path="checklist/:checklistId" element={<ChecklistView />} />
+        </Route>
         </Route>
       </Routes>
     </BrowserRouter>

@@ -1,4 +1,5 @@
 import { NavItem } from "./NavItem";
+import LogoutButton from "@/components/auth/LogoutButton";
 
 // Buttons to return to dashboard and sign out
 export function NavFooter() {
@@ -10,12 +11,13 @@ export function NavFooter() {
       >
         Back to Dashboard
       </NavItem>
-      <NavItem
+      {/* <NavItem
         link="/"
         className="font-medium justify-center bg-secondary-container text-on-secondary-container hover:bg-error-container active:bg-error-container/90"
       >
         Sign Out
-      </NavItem>
+      </NavItem> */}
+      <LogoutButton /> 
     </div>
   );
 }
