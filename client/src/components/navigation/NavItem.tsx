@@ -2,24 +2,24 @@ import { cn } from "@/lib/utils";
 import { NavLink } from "react-router";
 
 type NavItemProps = {
-  link: string;
   children: React.ReactNode;
   isSelected?: boolean;
+  link?: string;
   onClick?: () => void;
   className?: string;
 };
 
 // Styled button/link for the navigation menu
 export function NavItem({
-  link,
   children,
   isSelected,
+  link,
   onClick,
   className,
 }: NavItemProps) {
   return (
     <NavLink
-      to={link}
+      to={link ?? ""}
       onClick={onClick}
       className={cn(
         "font-bold lowercase rounded h-12 px-3 flex items-center text-on-secondary hover:bg-on-secondary active:bg-on-secondary/90 hover:text-secondary",
