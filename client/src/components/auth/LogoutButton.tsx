@@ -1,8 +1,6 @@
-import { Button } from "@/components/ui/button";
+import { NavItem } from "@/components/navigation/NavItem";
 
-export default function LogoutButton() { 
-   
-    
+export default function LogoutButton() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     const serverUrl = import.meta.env.VITE_SERVER_URL;
@@ -11,9 +9,11 @@ export default function LogoutButton() {
   };
 
   return (
-    <Button onClick={handleLogout}>
-      Sign Out 
-    </Button>
+    <NavItem
+      onClick={handleLogout}
+      className="font-medium justify-center bg-secondary-container text-on-secondary-container hover:bg-error-container active:bg-error-container/90"
+    >
+      Sign Out
+    </NavItem>
   );
 }
- 
