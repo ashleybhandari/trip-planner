@@ -15,35 +15,53 @@ const server = http.createServer(app);
 // ---------- Middleware ----------
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
-app.use(express.json()); 
+app.use(express.json());
 
-app.use(session({
-  secret: process.env.SESSION_SECRET,
-  resave: false,
-  saveUninitialized: false
-}));
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
 
 app.use(passport.initialize());
 app.use(passport.session());
 
 // ---------- MongoDB ----------
 
-mongoose.connect(process.env.MONGO_URI);
+const connectMongoDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGO_URI);
+    console.log("Connected to MongoDB");
+  } catch (error) {
+    console.error("Error connecting to MongoDB:", error);
+    process.exit(1);
+  }
+};
+
+connectMongoDB();
+
 const User = require("./models/User");
 
 // ---------- Passport Config ----------
-passport.use(new GoogleStrategy({
-  clientID: process.env.GOOGLE_CLIENT_ID,
-  clientSecret:  process.env.GOOGLE_CLIENT_SECRET,
-  callbackURL: "/auth/google/callback"
-}, async (accessToken, refreshToken, profile, done) => {
-  const user = await User.findOneAndUpdate(
-    { googleId: profile.id },
-    { displayName: profile.displayName },
-    { upsert: true, new: true }
-  );
-  return done(null, user);
-}));
+passport.use(
+  new GoogleStrategy(
+    {
+      clientID: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      callbackURL: "/auth/google/callback",
+    },
+    async (accessToken, refreshToken, profile, done) => {
+      const user = await User.findOneAndUpdate(
+        { googleId: profile.id },
+        { displayName: profile.displayName },
+        { upsert: true, new: true }
+      );
+      return done(null, user);
+    }
+  )
+);
 
 passport.serializeUser((user, done) => done(null, user.id));
 passport.deserializeUser(async (id, done) => {
@@ -52,10 +70,13 @@ passport.deserializeUser(async (id, done) => {
 });
 
 // ---------- Auth Routes ----------
-app.get("/auth/google", passport.authenticate("google", { scope: ["profile"] }));
+app.get(
+  "/auth/google",
+  passport.authenticate("google", { scope: ["profile"] })
+);
 
-
-app.get("/auth/google/callback",
+app.get(
+  "/auth/google/callback",
   passport.authenticate("google", { session: false, failureRedirect: "/" }),
   (req, res) => {
     const user = req.user;
@@ -67,25 +88,17 @@ app.get("/auth/google/callback",
     // console.log(token)
     const clientUrl = process.env.CLIENT_URL;
     const redirectUrl = `${clientUrl}/auth/callback?token=${token}`;
-// console.log("Redirecting to:", redirectUrl);
-res.redirect(redirectUrl);
+    // console.log("Redirecting to:", redirectUrl);
+    res.redirect(redirectUrl);
   }
-); 
-
+);
 
 app.get("/logout", (req, res) => {
   req.logout(() => {
     const clientUrl = process.env.CLIENT_URL;
-    res.redirect(`${clientUrl}/`); 
+    res.redirect(`${clientUrl}/`);
   });
 });
-
-
-
-
-
-
-
 
 // ---------- Start Server ----------
 const PORT = process.env.PORT || 3000;
