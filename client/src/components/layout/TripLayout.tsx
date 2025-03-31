@@ -1,7 +1,7 @@
 import { Outlet, useLocation, useParams } from "react-router";
 import { useEffect, useState } from "react";
 
-import { HamburgerMenu } from "@/components/navigation/HamburgerMenu";
+import { MobileNavigation } from "@/components/navigation/MobileNavigation";
 import { Navigation } from "@/components/navigation/Navigation";
 
 import { Checklist } from "@/types/Checklist";
@@ -39,7 +39,7 @@ export default function TripLayout() {
       <NavContext.Provider
         value={{ selected, setSelected, checklists, setChecklists }}
       >
-        <HamburgerMenu className="flex md:hidden" />
+        <MobileNavigation className="flex md:hidden" />
         <Navigation className="hidden md:flex w-60" />
       </NavContext.Provider>
       <main className="grow flex justify-center">

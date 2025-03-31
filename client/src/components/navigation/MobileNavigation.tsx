@@ -5,13 +5,13 @@ import { Navigation } from "./Navigation";
 import { NavContext } from "@/Contexts";
 import { PAGES } from "@/components/navigation/pages";
 
-type HamburgerMenuProps = {
+type MobileNavigationProps = {
   className?: string;
 };
 
 // Top navbar with hamburger button and page name. Clicking the hamburger opens
 // a full-screen navigation menu.
-export function HamburgerMenu({ className }: HamburgerMenuProps) {
+export function MobileNavigation({ className }: MobileNavigationProps) {
   const [openedPageName, setOpenedPageName] = useState<string | null>(); // null = menu is open
   const { selected, checklists } = useContext(NavContext);
 
