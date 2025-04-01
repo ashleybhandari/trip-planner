@@ -25,13 +25,30 @@ cd client
 Install dependencies.
 
 ```
-npm i
+npm i --force
 ```
 
-Start the server.
+Start the development server.
 
 ```
 npm run dev
+```
+In another terminal, navigate to the server directory.
+
+```
+cd server
+```
+
+Install dependencies.
+
+```
+npm i
+```
+
+Start the Node.js server.
+
+```
+npm run devStart
 ```
 
 Open http://localhost:5173/ in your preferred browser.

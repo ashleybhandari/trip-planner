@@ -44,9 +44,9 @@ export function MobileNavigation({ className }: MobileNavigationProps) {
           >
             <AlignLeft />
           </button>
-          <div className="lowercase font-bold absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ">
+          <h1 className="lowercase font-bold absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 ">
             {openedPageName}
-          </div>
+          </h1>
         </div>
       ) : (
         <div className="flex flex-col w-screen h-screen p-3">
