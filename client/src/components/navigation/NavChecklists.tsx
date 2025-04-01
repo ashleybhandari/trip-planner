@@ -48,20 +48,11 @@ export function NavChecklists() {
     if (!tripSlug) return;
     try {
     const token = localStorage.getItem("token")!;
-    const newChecklistData = await createChecklistByTripSlug(tripSlug, "New Checklist", token);
-    // const formattedChecklist:  Checklist = newChecklistData.map((checklist: any) => ({
-    //   name: checklist.name,
-    //   id: checklist._id
-    // }));
-    // // const id = generateRandomString(5);
-
-    // // create new checklist and select it in the nav menu
-    // setChecklists((prev) => [{ id, name: "new checklist" }, ...prev]);
-    // setSelected(id);
-
-    // // navigate to the new checklist
-    // navigate(`checklist/${id}`);
     const noun = generate();
+    const newChecklistData = await createChecklistByTripSlug(tripSlug, noun, token);
+    localStorage.setItem("checkListName", noun);
+
+    
     const formattedChecklist: Checklist = {
       name: noun,
       id: newChecklistData._id,
@@ -95,7 +86,7 @@ export function NavChecklists() {
             key={id}
             link={`checklist/${id}`}
             isSelected={selected === id}
-            onClick={() => setSelected(id)}
+            onClick={() => {setSelected(id); localStorage.setItem("checkListName", name);}}
             className="h-8 mb-1"
           >
             {name}

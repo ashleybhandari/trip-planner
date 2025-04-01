@@ -34,6 +34,8 @@ const ChecklistApp = () => {
 
   const [newLabel, setNewLabel] = useState("");
   const [newPerson, setNewPerson] = useState("");
+  const [checklistName, setChecklistName] = useState("");
+
 
     useEffect(() => {
       const fetchChecklistItems = async () => {
@@ -45,6 +47,8 @@ const ChecklistApp = () => {
   
           // Map backend response to frontend format
       console.log("heeeere", checklistItemsData.checklist.items);
+      console.log("wohoo", checklistItemsData.checklist.name );
+      setChecklistName(checklistItemsData.checklist.name);
       const formattedChecklistItems: checklistItem[] = checklistItemsData.checklist.items.map((checklist_item: any) => ({
             label: checklist_item.label,
             assignedTo: checklist_item.assignedTo, 
@@ -103,55 +107,73 @@ const ChecklistApp = () => {
   };
 
   return (
-    <div className="flex p-8 gap-8">
-      <Card className="bg-lime-200 w-2/3 shadow-none border-none p-6">
+
+<div className="flex flex-col lg:flex-row p-8 gap-6">
+      {/* Left: Checklist display */}
+      
+      <Card className="flex-1 bg-lime-100 rounded-lg shadow-sm p-6">
         <CardContent className="p-0">
-          <h1 className="text-3xl font-bold text-green-800 mb-4">checklist #1</h1>
-          {checklistItems.map(({_id, label, checked, assignedTo}) => (
-            <div key={_id} className="flex items-center justify-between mb-2">
-              <div className="flex items-start gap-2">
-                <Checkbox
-                  checked={checked}
-                  onCheckedChange={() => toggleCheck(_id)}
-                />
-                <div>
-                  <p className="font-medium">{label}</p>
-                  <p className="text-sm text-gray-700">Assigned To: {assignedTo}</p>
+        <h1 className="text-3xl font-bold text-green-800 mb-6">{localStorage.getItem("checkListName")}</h1>
+
+          {checklistItems.length === 0 ? (
+            <p className="text-gray-500">No items yet. Add something!</p>
+          ) : (
+            checklistItems.map(({ _id, label, checked, assignedTo }) => (
+              <div key={_id} className="flex justify-between items-start mb-4">
+                <div className="flex items-start gap-2">
+                  <Checkbox
+                    checked={checked}
+                    onCheckedChange={() => toggleCheck(_id)}
+                  />
+                  <div>
+                    <p className="font-medium">{label}</p>
+                    <p className="text-sm text-gray-600">
+                      Assigned to: {assignedTo}
+                    </p>
+                  </div>
                 </div>
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  onClick={() => deleteItem(_id)}
+                >
+                  Delete
+                </Button>
               </div>
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => deleteItem(_id)}
-              >
-                delete
-              </Button>
-            </div>
-          ))}
+            ))
+          )}
         </CardContent>
       </Card>
 
-      <Card className="w-1/3  border-none h-fit">
-        <CardContent className="p-4">
-          <h2 className="font-semibold mb-2">New Item</h2>
-          <label className="block mb-1">Label:</label>
+      {/* Right: New Item Form */}
+      <Card className="w-full lg:w-1/3 bg-lime-200 rounded-lg shadow-sm p-6">
+        <CardContent className="p-0">
+          <h2 className="text-lg font-semibold mb-4">New Item</h2>
+
+          <label className="block mb-1 font-medium text-sm">Label:</label>
           <Input
             value={newLabel}
             onChange={(e) => setNewLabel(e.target.value)}
-            className="mb-2"
+            className="mb-3"
           />
-          <label className="block mb-1">Assign To:</label>
+
+          <label className="block mb-1 font-medium text-sm">Assign To:</label>
           <Input
             value={newPerson}
             onChange={(e) => setNewPerson(e.target.value)}
             className="mb-4"
           />
-          <Button className="w-full" onClick={addItem}>
-            ADD TO LIST
+
+          <Button
+            className="w-full bg-green-800 text-white hover:bg-green-900"
+            onClick={addItem}
+          >
+            Add to List
           </Button>
         </CardContent>
       </Card>
     </div>
+
   );
 };
 
