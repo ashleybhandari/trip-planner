@@ -17,7 +17,7 @@ export default function Spinner({ size = 60, className }: SpinnerProps) {
       strokeWidth="1"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={cn("text-primary animate-spin", className)}
+      className={cn("text-primary animate-spin m-auto", className)}
     >
       <path d="M21 12a9 9 0 1 1-6.219-8.56" />
     </svg>

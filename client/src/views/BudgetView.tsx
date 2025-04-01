@@ -11,8 +11,8 @@ import Spinner from "@/components/ui/Spinner";
 
 import { Expense } from "@/types/Expense";
 import { formatAsUsd } from "@/utils/format-as-usd";
-import { MOCK_EXPENSES } from "@/mock-data/mock-expenses";
-import { MOCK_USERS } from "@/mock-data/mock-expenses";
+import { MOCK_EXPENSES } from "@/mock/mock-expenses";
+import { MOCK_USERS } from "@/mock/mock-expenses";
 
 export default function MyTripView() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -69,13 +69,13 @@ export default function MyTripView() {
       };
 
       fetchExpenses();
-    }, 500);
+    }, 100);
   }, []);
 
   return (
     <>
       {isLoading ? (
-        <Spinner className="m-auto" />
+        <Spinner />
       ) : (
         <div className="w-full h-full p-3 flex flex-col gap-3">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">

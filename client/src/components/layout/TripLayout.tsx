@@ -5,7 +5,7 @@ import { MobileNavigation } from "@/components/navigation/MobileNavigation";
 import { Navigation } from "@/components/navigation/Navigation";
 
 import { Checklist } from "@/types/Checklist";
-import { MOCK_CHECKLISTS } from "@/mock-data/mock-checklists";
+import { MOCK_CHECKLISTS } from "@/mock/mock-checklists";
 import { NavContext } from "@/Contexts";
 import { PAGES } from "@/components/navigation/pages";
 
