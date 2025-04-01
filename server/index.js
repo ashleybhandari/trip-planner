@@ -1,16 +1,3 @@
-// const express = require("express");
-// const bodyParser = require("body-parser");
-// const mongoose = require("mongoose");
-// const session = require("express-session");
-// const passport = require("passport");
-// const GoogleStrategy = require("passport-google-oauth20").Strategy;
-// const http = require("http");
-// const { Server } = require("socket.io");
-// const cors = require("cors");
-// const jwt = require("jsonwebtoken");
-
-// require("dotenv").config();
-
 import express from "express"; 
 import mongoose from "mongoose"; 
 import bodyParser  from "body-parser";
@@ -28,6 +15,7 @@ import cors from "cors";
 import User from "./models/User.js"; 
 import Trip from "./models/Trip.js"; 
 import {Checklist, ChecklistItem} from "./models/Checklist.js";
+import { BudgetItem } from "./models/Budget.js";
 
 const app = express();
 const server = http.createServer(app);
@@ -51,7 +39,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(cors({
-  origin: "http://localhost:5173", // or 3000, depending on your React dev server
+  origin: "http://localhost:5173",
   credentials: true,
 }));
 
@@ -68,9 +56,6 @@ const connectMongoDB = async () => {
 };
 
 connectMongoDB();
-
-// const User = require("./models/User");
-// const Trip = require( "./models/Trip.js"); 
 
 // ---------- Passport Config ----------
 passport.use(
@@ -142,6 +127,7 @@ function verifyToken(req, res, next) {
     next();
   });
 }
+
 
 // ---------- API calls for Trips ----------
 app.post("/api/trips", verifyToken, async (req, res) => {
@@ -216,6 +202,73 @@ app.get("/api/trips/:tripId", verifyToken, async (req, res) => {
     res.status(500).json({ error: "Failed to fetch trip" });
   }
 });
+
+// ---------- API calls for Budget  ----------
+app.get("/api/trip/slug/:slug/budget", verifyToken, async (req, res) => {
+  const { slug } = req.params;
+  const userId = req.user.id;
+
+  try {
+    // 1. Find the trip
+    const trip = await Trip.findOne({ tripSlug: slug });
+    if (!trip) {
+      return res.status(404).json({ error: "Trip not found" });
+    }
+
+    // 2. Check if current user is part of the trip
+    const isUserInTrip = trip.users.some(user => user.toString() === userId);
+    if (!isUserInTrip) {
+      return res.status(403).json({ error: "Access denied" });
+    }
+
+    // 3. Fetch and return budget items
+    const { budget } = await Trip.findOne({ tripSlug: slug }).populate("budget");
+    res.json(budget);
+  
+  } catch (err) {
+    console.error("Error fetching budget:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+app.post("/api/trip/slug/:slug/budget", verifyToken, async (req, res) => {
+  const { slug } = req.params;
+  const userId = req.user.id;
+  const { expense, date, amount, paidBy = [] } = req.body;
+
+  try {
+    // 1. Find the trip
+    const trip = await Trip.findOne({ tripSlug: slug });
+    if (!trip) {
+      return res.status(404).json({ error: "Trip not found" });
+    }
+
+    // 2. Check if current user is part of the trip
+    const isUserInTrip = trip.users.some(user => user.toString() === userId);
+    if (!isUserInTrip) {
+      return res.status(403).json({ error: "Access denied" });
+    }
+
+    // 3. Fetch and return budget items
+
+    const budgetItem = new BudgetItem({ expense:expense, date: date, amount: Number(amount), paidBy: paidBy}); 
+    console.log(checklist);
+    // await checklistItem.save(); 
+    await budgetItem.save();
+   
+    trip.budget.push(budgetItem._id);
+    await trip.save();
+  
+    res.status(201).json(budgetItem);
+
+
+  
+  
+  } catch (err) {
+    console.error("Error adding budget item:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+});
+
 // ---------- API calls for Checklist  ----------
 app.get("/api/trip/slug/:slug/checklist/:checklist_id", verifyToken, async (req, res) => {
   const { slug, checklist_id } = req.params;
@@ -229,7 +282,7 @@ app.get("/api/trip/slug/:slug/checklist/:checklist_id", verifyToken, async (req,
     }
 
     // 2. Check if checklist_id matches the trip’s checklistId 
-    const checklist = await Checklist.findById(checklist_id)
+    const checklist = await Checklist.findById(checklist_id)   
     const isChecklistInTrip = trip.checklists.some(checklist => checklist.toString() === checklist_id);
     if (!isChecklistInTrip) {
       return res.status(403).json({ error: "Checklist does not belong to this trip" });
@@ -246,7 +299,7 @@ app.get("/api/trip/slug/:slug/checklist/:checklist_id", verifyToken, async (req,
     if (!checklist) {
       return res.status(404).json({ error: "Checklist not found" });
     }
-
+    
     res.json({ checklist });
 
   } catch (err) {
@@ -330,14 +383,6 @@ app.delete("/api/trip/slug/:slug/checklist/:checklist_id/item/:checklist_item_id
     if (!isUserInTrip) {
       return res.status(403).json({ error: "Access denied" });
     }
-
-    // const checklistItem = new ChecklistItem({ label:label, assignedTo: assignedTo, checked: checked}); 
-    // console.log(checklist);
-    // // await checklistItem.save(); 
-    
-    // console.log(`label: ${label}`); 
-    // checklist.items.push(checklistItem);
-    // await checklist.save();
     await Checklist.findByIdAndUpdate(checklist_id, {
       $pull: {
         items: { _id: checklist_item_id }
