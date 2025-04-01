@@ -223,7 +223,8 @@ app.get("/api/trip/slug/:slug/budget", verifyToken, async (req, res) => {
 
     // 3. Fetch and return budget items
     const { budget } = await Trip.findOne({ tripSlug: slug }).populate("budget");
-    res.json(budget);
+    // res.json(budget);
+    res.status(201).json(budget);
   
   } catch (err) {
     console.error("Error fetching budget:", err);
@@ -251,7 +252,7 @@ app.post("/api/trip/slug/:slug/budget", verifyToken, async (req, res) => {
     // 3. Fetch and return budget items
 
     const budgetItem = new BudgetItem({ expense:expense, date: date, amount: Number(amount), paidBy: paidBy}); 
-    console.log(checklist);
+    console.log(budgetItem);
     // await checklistItem.save(); 
     await budgetItem.save();
    
