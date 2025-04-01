@@ -11,6 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import LogoutButton from "@/components/auth/LogoutButton";
 import { useNavigate } from "react-router-dom";
 
 type Trip = {
@@ -51,7 +52,8 @@ const DashboardView = () => {
           destination: trip.destinations,
           members: trip.users.map((u: any) => u.name || u.email || "Collaborator"),
           slug: trip.tripSlug,
-        }));
+        })); 
+      
 
         setTrips(formattedTrips);  
         console.log(data);
@@ -123,7 +125,8 @@ const DashboardView = () => {
     <div className="bg-gray-100 min-h-screen">
       <nav className="bg-green-700 text-white p-4 flex justify-between items-center">
         <h1 className="text-xl font-bold">trip planner</h1>
-        <button className="bg-white text-green-700 px-4 py-2 rounded-md">Sign Out</button>
+        {/* <button className="bg-white text-green-700 px-4 py-2 rounded-md">Sign Out</button> */}
+         <LogoutButton />
       </nav>
 
       <div className="max-w-4xl mx-auto p-6">
