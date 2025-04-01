@@ -7,6 +7,7 @@ import BudgetCard from "@/components/budget/BudgetCard";
 import { budgetColumns } from "@/components/budget/budget-columns";
 import DataTable from "@/components/ui/DataTable";
 import PageSection from "@/components/ui/PageSection";
+import Spinner from "@/components/ui/Spinner";
 
 import { Expense } from "@/types/Expense";
 import { formatAsUsd } from "@/utils/format-as-usd";
@@ -61,34 +62,45 @@ export default function MyTripView() {
 
   // Fetch expenses
   useEffect(() => {
-    const fetchExpenses = async () => {
-      setExpenses(MOCK_EXPENSES.sort((a, b) => (a.date < b.date ? 1 : -1)));
-      setIsLoading(false);
-    };
+    setTimeout(() => {
+      const fetchExpenses = async () => {
+        setExpenses(MOCK_EXPENSES.sort((a, b) => (a.date < b.date ? 1 : -1)));
+        setIsLoading(false);
+      };
 
-    fetchExpenses();
+      fetchExpenses();
+    }, 500);
   }, []);
 
   return (
-    <div className="w-full h-full p-3 flex flex-col gap-3">
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <BudgetCard title="total spent" className="bg-primary text-on-primary">
-          {formatAsUsd(totalSpent)}
-        </BudgetCard>
-        {users.map((user) => (
-          <BudgetCard key={user} title={user}>
-            <div>spent {formatAsUsd(getBalance(user)?.spent)}</div>
-            <div>owes {formatAsUsd(getBalance(user)?.owes)}</div>
-          </BudgetCard>
-        ))}
-      </div>
-      <PageSection className="flex items-center p-5">
-        <AddExpenseForm onSubmit={handleAddExpense} />
-      </PageSection>
-      <DataTable
-        columns={budgetColumns}
-        data={expenses.map(stringifyExpense)}
-      />
-    </div>
+    <>
+      {isLoading ? (
+        <Spinner className="m-auto" />
+      ) : (
+        <div className="w-full h-full p-3 flex flex-col gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            <BudgetCard
+              title="total spent"
+              className="bg-primary text-on-primary"
+            >
+              {formatAsUsd(totalSpent)}
+            </BudgetCard>
+            {users.map((user) => (
+              <BudgetCard key={user} title={user}>
+                <div>spent {formatAsUsd(getBalance(user)?.spent)}</div>
+                <div>owes {formatAsUsd(getBalance(user)?.owes)}</div>
+              </BudgetCard>
+            ))}
+          </div>
+          <PageSection className="flex items-center p-5">
+            <AddExpenseForm onSubmit={handleAddExpense} />
+          </PageSection>
+          <DataTable
+            columns={budgetColumns}
+            data={expenses.map(stringifyExpense)}
+          />
+        </div>
+      )}
+    </>
   );
 }
