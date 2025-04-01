@@ -26,6 +26,13 @@ const tripSchema= new Schema({
   }
 
   ], 
+//   users_names:
+//   [{
+//     type: strig, 
+//     ref: User
+//   }
+
+//   ], 
   checklists:
   [
     {
