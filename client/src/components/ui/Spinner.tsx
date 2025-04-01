@@ -5,6 +5,8 @@ type SpinnerProps = {
   className?: string;
 };
 
+// Loading spinner
+// Source: https://github.com/shadcn-ui/ui/discussions/1694#discussioncomment-7477119
 export default function Spinner({ size = 60, className }: SpinnerProps) {
   return (
     <svg

@@ -3,8 +3,8 @@ import { z } from "zod";
 
 import AddExpenseForm from "@/components/budget/AddExpenseForm";
 import { addExpenseFormSchema } from "@/components/budget/add-expense-form-schema";
-import BudgetCard from "@/components/budget/BudgetCard";
 import { budgetColumns } from "@/components/budget/budget-columns";
+import Card from "@/components/ui/Card";
 import DataTable from "@/components/ui/DataTable";
 import PageSection from "@/components/ui/PageSection";
 import Spinner from "@/components/ui/Spinner";
@@ -77,19 +77,16 @@ export default function MyTripView() {
       {isLoading ? (
         <Spinner />
       ) : (
-        <div className="w-full h-full p-3 flex flex-col gap-3">
+        <div className="w-full h-full flex flex-col gap-3">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-            <BudgetCard
-              title="total spent"
-              className="bg-primary text-on-primary"
-            >
+            <Card title="total spent" className="bg-primary text-on-primary">
               {formatAsUsd(totalSpent)}
-            </BudgetCard>
+            </Card>
             {users.map((user) => (
-              <BudgetCard key={user} title={user}>
+              <Card key={user} title={user}>
                 <div>spent {formatAsUsd(getBalance(user)?.spent)}</div>
                 <div>owes {formatAsUsd(getBalance(user)?.owes)}</div>
-              </BudgetCard>
+              </Card>
             ))}
           </div>
           <PageSection className="flex items-center p-5">

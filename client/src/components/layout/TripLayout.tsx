@@ -42,7 +42,7 @@ export default function TripLayout() {
         <MobileNavigation className="flex md:hidden" />
         <Navigation className="hidden md:flex w-60" />
       </NavContext.Provider>
-      <main className="grow flex justify-center h-screen overflow-y-scroll">
+      <main className="grow flex justify-center h-screen overflow-y-scroll p-3">
         <Outlet />
       </main>
     </div>

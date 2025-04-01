@@ -2,14 +2,14 @@ import { cn } from "@/lib/utils";
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import PageSection from "@/components/ui/PageSection";
-import TextArea from "@/components/itinerary/TextArea";
+import TextArea from "@/components/ui/TextArea";
 
 export default function ItineraryView() {
   const [date, setDate] = useState<Date | undefined>(new Date());
   const headerClasses = "font-bold text-primary mb-2";
 
   return (
-    <div className="flex flex-col md:flex-row gap-3 w-full h-full p-3">
+    <div className="flex flex-col md:flex-row gap-3 w-full h-full">
       <div className="flex flex-col min-[550px]:flex-row md:flex-col gap-3">
         <PageSection>
           <Calendar

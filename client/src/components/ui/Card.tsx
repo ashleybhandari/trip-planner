@@ -1,17 +1,13 @@
 import { cn } from "@/lib/utils";
 import PageSection from "@/components/ui/PageSection";
 
-type BudgetCardProps = {
+type CardProps = {
   title: string;
   children: React.ReactNode;
   className?: string;
 };
 
-export default function BudgetCard({
-  title,
-  children,
-  className,
-}: BudgetCardProps) {
+export default function Card({ title, children, className }: CardProps) {
   return (
     <PageSection
       className={cn(
