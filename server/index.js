@@ -224,6 +224,7 @@ app.get("/api/trip/slug/:slug/budget", verifyToken, async (req, res) => {
     // 3. Fetch and return budget items
     const { budget } = await Trip.findOne({ tripSlug: slug }).populate("budget");
     // res.json(budget);
+   
     res.status(201).json(budget);
   
   } catch (err) {

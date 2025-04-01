@@ -19,7 +19,7 @@ export async function getBudgetByTripSlug(token: string, tripSlug: string) {
     // return await res.json();
   }
   
-  export async function createBudgetItem(token: string, tripSlug: string, expense: string, date: string, amount: string, paidBy: string) {
+  export async function createBudgetItem(token: string, tripSlug: string, expense: string, date: string, amount: number, paidBy: string) {
     const serverUrl = import.meta.env.VITE_SERVER_URL;
     
     const res = await  fetch(`${serverUrl}/api/trip/slug/${tripSlug}/budget`, {

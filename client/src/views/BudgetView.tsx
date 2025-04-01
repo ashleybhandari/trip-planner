@@ -99,7 +99,7 @@ export default function MyTripView() {
         console.log(budgetItemsData);
         const formattedBudgetItemsData:Expense[]=budgetItemsData.map((budget_item: any) => ({name: budget_item.expense ,
           date: new Date(budget_item.date),
-          amount: Number(budget_item.number),
+          amount: Number(budget_item.amount),
           payer: budget_item.paidBy})); 
         
         setExpenses(formattedBudgetItemsData.sort((a, b) => (a.date < b.date ? 1 : -1)));
