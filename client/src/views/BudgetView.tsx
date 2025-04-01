@@ -4,7 +4,7 @@ import { z } from "zod";
 import AddExpenseForm from "@/components/budget/AddExpenseForm";
 import { addExpenseFormSchema } from "@/components/budget/add-expense-form-schema";
 import { budgetColumns } from "@/components/budget/budget-columns";
-import Card from "@/components/ui/Card";
+import {Card} from "@/components/ui/card";
 import DataTable from "@/components/ui/DataTable";
 import PageSection from "@/components/ui/PageSection";
 import Spinner from "@/components/ui/Spinner";
