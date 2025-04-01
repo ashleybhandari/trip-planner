@@ -42,21 +42,11 @@ const tripSchema= new Schema({
         required: false
     }
   ], 
-
-  checklists:
-  [
-    {
-        type: mongoose.Schema.Types.ObjectId, 
-        ref: BudgetItem, 
-        required: false
-    }
-  ], 
-
   budget:
   [
     {
         type: mongoose.Schema.Types.ObjectId, 
-        type: mongoose.Schema.Types.ObjectId, 
+        ref: BudgetItem, 
         required: false
     }
   ], 
