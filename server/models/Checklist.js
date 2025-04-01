@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import Trip from './Trip.js';
 import User from './User.js'
 
+//eacah checklist item
 const checklistItemSchema= new mongoose.Schema({
   label:{
     type: String,
@@ -19,6 +20,7 @@ const checklistItemSchema= new mongoose.Schema({
 
 }); 
 
+//checklist schema 
 const checklistSchema = new mongoose.Schema({
   name:{
     type: String, 
