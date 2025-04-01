@@ -16,7 +16,7 @@ useEffect(() => {
   
       if (token) {
         localStorage.setItem("token", token);
-        navigate("/trip/123");
+        navigate("/dashboard");
       } else {
         // navigate("/");
         console.log("error")
