@@ -72,8 +72,8 @@ export default function MyTripView() {
   return (
     <div className="w-full h-full p-3 flex flex-col gap-3">
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-        <BudgetCard title="total spent" className="bg-primary-container text-on-primary-containre">
-          ${totalSpent}
+        <BudgetCard title="total spent" className="bg-primary text-on-primary">
+          {formatAsUsd(totalSpent)}
         </BudgetCard>
         {users.map((user) => (
           <BudgetCard key={user} title={user}>
