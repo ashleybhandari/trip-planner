@@ -3,70 +3,79 @@ import TripCard from "@/components/mytrip/TripCard";
 import BigBox from "@/components/mytrip/BigBox";
 import { Button } from "@/components/ui/button";
 
-// Example data type for trip
+
 type Trip = {
-  name: string;
-  details: string;
+ name: string;
+ details: string;
 };
 
+
 export default function MyTripView() {
-  // State to store trip name and trip data
-  const [tripName, setTripName] = useState<string>("DUMMY TRIP NAME");
-  const [trips, setTrips] = useState<Trip[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Loading state
+ const [tripName, setTripName] = useState<string>("DUMMY TRIP NAME");
+ const [trips, setTrips] = useState<Trip[]>([]);
+ const [loading, setLoading] = useState<boolean>(true);
 
-  // Example fetching function (replace with actual API call or data fetching logic)
-  useEffect(() => {
-    // Simulate an API call to fetch trip data
-    const fetchTrips = async () => {
-      // Simulate fetching data with a timeout
-      setTimeout(() => {
-        const fetchedTrips: Trip[] = [
-          { name: "Trip Name:", details: "" },
-          { name: "Destination:", details: "" },
-          { name: "Dates:", details: "" },
-          { name: "Collaborators:", details: "" },
-        ];
-        setTrips(fetchedTrips);
-        setLoading(false); // Data fetching complete
-      }, 1000); // Simulate a 1-second delay
-    };
 
-    fetchTrips(); // Call fetchTrips when component mounts
-  }, []);
+ useEffect(() => {
+   const fetchTrips = async () => {
+     setTimeout(() => {
+       const fetchedTrips: Trip[] = [
+         { name: "Trip Name:", details: "" },
+         { name: "Destination:", details: "" },
+         { name: "Dates:", details: "" },
+         { name: "Collaborators:", details: "" },
+       ];
+       setTrips(fetchedTrips);
+       setLoading(false);
+     }, 1000);
+   };
 
-  return (
-    <div className="flex flex-col px-4 py-6 lg:px-8">
-      {/* Trip Card */}
-      <TripCard tripName={tripName} />
 
-      {/* Big Box for trips */}
-      <BigBox>
-        {loading ? (
-          <p>Loading trip details...</p> // Display loading message
-        ) : trips.length > 0 ? (
-          trips.map((trip, index) => (
-            <div
-              key={index}
-              className={`flex flex-col w-full sm:w-[850px] md:w-[650px] lg:w-[850px] p-4 rounded-lg shadow-md mb-4 ${
-                index === 1 || index === 2 ? "flex-grow" : ""
-              }`}
-              style={{ backgroundColor: "var(--color-primary-container)" }}
-            >
-              <h3 className="font-bold">{trip.name}</h3>
-              <p className="break-words">{trip.details}</p>
-            </div>
-          ))
-        ) : (
-          <p>No trip details available.</p>
-        )}
-      </BigBox>
+   fetchTrips();
+ }, []);
 
-      {/* Buttons container */}
-      <div className="flex flex-wrap justify-center gap-4 mt-4 lg:justify-end">
-        <Button className="bg-black text-white hover:bg-gray-800">Delete Trip</Button>
-        <Button className="bg-black text-white hover:bg-gray-800">End Trip</Button>
-      </div>
-    </div>
-  );
+
+ return (
+   <div className="flex flex-col items-center px-4 py-6 sm:px-6 lg:px-8">
+     {/* TripCard with responsive width */}
+     <TripCard tripName={tripName} width="w-full sm:w-[800px] md:w-[900px]" />
+
+
+     {/* BigBox with responsive width */}
+     <BigBox width="w-full sm:w-[800px] md:w-[900px]">
+       {loading ? (
+         <p>Loading trip details...</p>
+       ) : trips.length > 0 ? (
+         trips.map((trip, index) => (
+           <div
+             key={index}
+             className="flex flex-col w-full p-4 rounded-lg shadow-md mb-4"
+             style={{
+               backgroundColor: 'var(--color-primary-fixed)', // Fixed background color for the box
+               color: 'rgb(var(--color-shadow))', // Text color using --color-shadow
+             }}
+           >
+             <h3 className="font-bold">{trip.name}</h3>
+             <p className="break-words">{trip.details}</p>
+           </div>
+         ))
+       ) : (
+         <p>No trip details available.</p>
+       )}
+
+
+       {/* Buttons inside BigBox, aligned to the bottom */}
+       <div className="flex justify-end gap-4 p-4 sm:fixed sm:bottom-4 sm:right-4 sm:w-[auto]">
+         <Button className="bg-[var(--color-on-primary-container)] text-white hover:bg-opacity-80">
+           Delete Trip
+         </Button>
+         <Button className="bg-[var(--color-on-primary-container)] text-white hover:bg-opacity-80">
+           End Trip
+         </Button>
+       </div>
+     </BigBox>
+   </div>
+ );
 }
+
+
