@@ -1,81 +1,105 @@
 import { useEffect, useState } from "react";
-import TripCard from "@/components/mytrip/TripCard";
-import BigBox from "@/components/mytrip/BigBox";
 import { Button } from "@/components/ui/button";
-
-
-type Trip = {
- name: string;
- details: string;
-};
-
+import Card from "@/components/ui/Card";
+import EditableText from "@/components/ui/EditableText";
+import Spinner from "@/components/ui/Spinner";
+import { MOCK_TRIP_DETAILS } from "@/mock/mock-trip-details";
+import { TripDetails } from "@/types/TripDetails";
+import TextArea from "@/components/ui/TextArea";
+import { useNavigate } from "react-router";
+import BigBox from "@/components/my-trip/BigBox";
 
 export default function MyTripView() {
- const [tripName, setTripName] = useState<string>("DUMMY TRIP NAME");
- const [trips, setTrips] = useState<Trip[]>([]);
- const [loading, setLoading] = useState<boolean>(true);
+  const [tripDetails, setTripDetails] = useState<TripDetails>({
+    name: "My Trip",
+    destinations: [],
+    collaborators: [],
+  });
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
 
+  const goToDashboard = () => navigate("/dashboard");
 
- useEffect(() => {
-   const fetchTrips = async () => {
-     setTimeout(() => {
-       const fetchedTrips: Trip[] = [
-         { name: "Trip Name:", details: "" },
-         { name: "Destination:", details: "" },
-         { name: "Dates:", details: "" },
-         { name: "Collaborators:", details: "" },
-       ];
-       setTrips(fetchedTrips);
-       setLoading(false);
-     }, 1000);
-   };
+  // Save name to tripDetails when user stops editing
+  const handleSaveName = (name: string) =>
+    setTripDetails((prev: TripDetails) => ({
+      ...prev,
+      name,
+    }));
 
+  // Fetch trip details
+  useEffect(() => {
+    const fetchTripDetails = async () => {
+      setTimeout(() => {
+        setTripDetails(MOCK_TRIP_DETAILS);
+        setIsLoading(false);
+      }, 100);
+    };
 
-   fetchTrips();
- }, []);
+    fetchTripDetails();
+  }, []);
 
-
- return (
-   <div className="flex flex-col items-center px-4 py-6 sm:px-6 lg:px-8">
-     {/* TripCard with responsive width */}
-     <TripCard tripName={tripName} width="w-full sm:w-[800px] md:w-[900px]" />
-
-
-     {/* BigBox with responsive width */}
-     <BigBox width="w-full sm:w-[800px] md:w-[900px]">
-       {loading ? (
-         <p>Loading trip details...</p>
-       ) : trips.length > 0 ? (
-         trips.map((trip, index) => (
-           <div
-             key={index}
-             className="flex flex-col w-full p-4 rounded-lg shadow-md mb-4"
-             style={{
-               backgroundColor: 'var(--color-primary-fixed)', // Fixed background color for the box
-               color: 'rgb(var(--color-shadow))', // Text color using --color-shadow
-             }}
-           >
-             <h3 className="font-bold">{trip.name}</h3>
-             <p className="break-words">{trip.details}</p>
-           </div>
-         ))
-       ) : (
-         <p>No trip details available.</p>
-       )}
-
-
-       {/* Buttons inside BigBox, aligned to the bottom */}
-       <div className="flex justify-end gap-4 p-4 sm:fixed sm:bottom-4 sm:right-4 sm:w-[auto]">
-         <Button className="bg-[var(--color-on-primary-container)] text-white hover:bg-opacity-80">
-           Delete Trip
-         </Button>
-         <Button className="bg-[var(--color-on-primary-container)] text-white hover:bg-opacity-80">
-           End Trip
-         </Button>
-       </div>
-     </BigBox>
-   </div>
- );
+  return (
+    <>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <div className="flex flex-col gap-5 w-full h-full justify-center">
+          <div className="self-center flex gap-5 mx-3 my-5">
+            <EditableText
+              onSave={handleSaveName}
+              iconSize={24}
+              className="text-3xl text-center font-bold text-primary"
+            >
+              {tripDetails?.name}
+            </EditableText>
+          </div>
+          <BigBox>
+            <Card
+              title="Destination"
+              className="flex flex-col w-full p-4 bg-primary-container text-on-primary-container"
+            >
+              <TextArea
+                placeholder="oh, the places you'll go!"
+                className="min-h-24"
+              />
+            </Card>
+            <Card
+              title="Dates"
+              className="flex flex-col w-full p-4 bg-primary-container text-on-primary-container"
+            >
+              <TextArea
+                placeholder="scribble down a few dates and see what sticks"
+                className="min-h-24"
+              />
+            </Card>
+            <Card
+              title="Collaborators"
+              className="flex flex-col w-full p-4 bg-primary-container text-on-primary-container"
+            >
+              <TextArea
+                placeholder="who are your travel buddies?"
+                className="min-h-24"
+              />
+            </Card>
+          </BigBox>
+          <div className="self-end flex gap-2">
+            <Button
+              onClick={goToDashboard}
+              className="text-on-error bg-error hover:bg-error/80"
+            >
+              Delete Trip
+            </Button>
+            <Button
+              onClick={goToDashboard}
+              variant="secondary"
+              className="text-on-secondary"
+            >
+              End Trip
+            </Button>
+          </div>
+        </div>
+      )}
+    </>
+  );
 }
-
-
