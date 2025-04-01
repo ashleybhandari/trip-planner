@@ -1,7 +1,7 @@
 import { Outlet, useLocation, useParams } from "react-router";
 import { useEffect, useState } from "react";
 
-import { HamburgerMenu } from "@/components/navigation/HamburgerMenu";
+import { MobileNavigation } from "@/components/navigation/MobileNavigation";
 import { Navigation } from "@/components/navigation/Navigation";
 
 import { Checklist } from "@/types/Checklist";
@@ -9,8 +9,9 @@ import { MOCK_CHECKLISTS } from "@/mock-data/mock-checklists";
 import { NavContext } from "@/Contexts";
 import { PAGES } from "@/components/navigation/pages";
 
+// Navigation + page content. When the screen is small, move navigation into a
+// hamburger button (when open, it covers the entire page)
 export default function TripLayout() {
-  const [pageVisible, setPageVisible] = useState(true);
   const [selected, setSelected] = useState("");
   const [checklists, setChecklists] = useState<Checklist[]>([]);
 
@@ -33,24 +34,17 @@ export default function TripLayout() {
     setChecklists(MOCK_CHECKLISTS);
   }, [setChecklists]);
 
-  // Navigation + page content. When the screen is small, move navigation into
-  // a hamburger menu (and if menu is open, hide the rest of the page).
   return (
-    <NavContext.Provider
-      value={{ selected, setSelected, checklists, setChecklists }}
-    >
-      <div className="flex flex-col md:flex-row">
-        <HamburgerMenu
-          setPageVisible={setPageVisible}
-          className="flex md:hidden"
-        />
+    <div className="flex flex-col md:flex-row">
+      <NavContext.Provider
+        value={{ selected, setSelected, checklists, setChecklists }}
+      >
+        <MobileNavigation className="flex md:hidden" />
         <Navigation className="hidden md:flex w-60" />
-        {pageVisible && (
-          <main className="grow flex justify-center">
-            <Outlet />
-          </main>
-        )}
-      </div>
-    </NavContext.Provider>
+      </NavContext.Provider>
+      <main className="grow flex justify-center">
+        <Outlet />
+      </main>
+    </div>
   );
 }

@@ -11,13 +11,7 @@ export function NavFooter() {
       >
         Back to Dashboard
       </NavItem>
-      {/* <NavItem
-        link="/"
-        className="font-medium justify-center bg-secondary-container text-on-secondary-container hover:bg-error-container active:bg-error-container/90"
-      >
-        Sign Out
-      </NavItem> */}
-      <LogoutButton /> 
+      <LogoutButton />
     </div>
   );
 }
