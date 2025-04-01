@@ -9,6 +9,7 @@ import MyTripView from "@/views/MyTripView";
 import TripLayoutView from "@/components/layout/TripLayout";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AuthCallbackView from "@/views/AuthCallbackView";
+import DashboardView from "./views/DashboardView";
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
         <Route path="/auth/callback" element={<AuthCallbackView />} />
         <Route element={<ProtectedRoute />}>
         {/* add all protected routes here */}
+        <Route path="dashboard" element={<DashboardView />} />
         <Route path="trip/:tripId" element={<TripLayoutView />}>
           <Route path="summary" element={<MyTripView />} />
           <Route path="itinerary" element={<ItineraryView />} />
