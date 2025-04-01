@@ -1,70 +1,94 @@
-import { useEffect, useState } from "react";
-import TripCard from "@/components/mytrip/TripCard";
-import BigBox from "@/components/mytrip/BigBox";
-import { Button } from "@/components/ui/button";
+import { useEffect, useMemo, useState } from "react";
+import { z } from "zod";
 
-type Budget = {
-  name: string;
-  details: string;
-};
+import AddExpenseForm from "@/components/budget/AddExpenseForm";
+import { addExpenseFormSchema } from "@/components/budget/add-expense-form-schema";
+import BudgetCard from "@/components/budget/BudgetCard";
+import { budgetColumns } from "@/components/budget/budget-columns";
+import DataTable from "@/components/ui/DataTable";
+import PageSection from "@/components/ui/PageSection";
+
+import { Expense } from "@/types/Expense";
+import { formatAsUsd } from "@/utils/format-as-usd";
+import { MOCK_EXPENSES } from "@/mock-data/mock-expenses";
+import { MOCK_USERS } from "@/mock-data/mock-expenses";
 
 export default function MyTripView() {
-  const [budget, setBudget] = useState<Budget[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [expenses, setExpenses] = useState<Expense[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const users = Object.values(MOCK_USERS);
 
+  // Total amount collectively spent
+  const totalSpent = useMemo(
+    () => expenses.reduce((acc, cur) => acc + cur.amount, 0),
+    [expenses]
+  );
+
+  // How much each user has spent and currently owes
+  const balances = useMemo(
+    () =>
+      users.map((user) => {
+        const spent = expenses.reduce(
+          (acc, cur) =>
+            cur.payer.toLowerCase() === user.toLowerCase()
+              ? acc + cur.amount
+              : acc,
+          0
+        );
+        const owes = (totalSpent - spent) / users.length;
+        return { user, spent, owes };
+      }),
+    [expenses, totalSpent, users]
+  );
+
+  // Get a particular user's balance
+  const getBalance = (user: string) => {
+    return balances.find((b) => b.user.toLowerCase() === user.toLowerCase());
+  };
+
+  // Add an expense to the table
+  const handleAddExpense = (values: z.infer<typeof addExpenseFormSchema>) => {
+    setExpenses((prev) => [{ ...values, date: new Date() }, ...prev]);
+  };
+
+  // Make expense more reader-friendly so it can be supplied to the table
+  const stringifyExpense = (e: Expense) => ({
+    name: e.name,
+    date: e.date.toLocaleDateString(),
+    amount: formatAsUsd(e.amount),
+    payer: e.payer,
+  });
+
+  // Fetch expenses
   useEffect(() => {
-    const fetchBudgetDetails = async () => {
-      setTimeout(() => {
-        const fetchedBudget: Budget[] = [
-          { name: "Budget Overview:", details: "" },
-          { name: "Expense List:", details: "" },
-          { name: "Amount to Pay:", details: "" },
-        ];
-        setBudget(fetchedBudget);
-        setLoading(false);
-      }, 1000);
+    const fetchExpenses = async () => {
+      setExpenses(MOCK_EXPENSES.sort((a, b) => (a.date < b.date ? 1 : -1)));
+      setIsLoading(false);
     };
 
-    fetchBudgetDetails();
+    fetchExpenses();
   }, []);
 
   return (
-    <div className="flex flex-col items-center px-4 py-6 sm:px-6 lg:px-8">
-      {/* TripCard with responsive width */}
-      <TripCard
-        tripName="EXPENSES"
-        width="w-full sm:w-[800px] md:w-[900px]"
-        style={{ color: 'var(--color-primary-fixed)' }} // Apply color here to the text
+    <div className="w-full h-full p-3 flex flex-col gap-3">
+      <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+        <BudgetCard title="total spent" className="bg-primary-container text-on-primary-containre">
+          ${totalSpent}
+        </BudgetCard>
+        {users.map((user) => (
+          <BudgetCard key={user} title={user}>
+            <div>spent {formatAsUsd(getBalance(user)?.spent)}</div>
+            <div>owes {formatAsUsd(getBalance(user)?.owes)}</div>
+          </BudgetCard>
+        ))}
+      </div>
+      <PageSection className="flex items-center p-5">
+        <AddExpenseForm onSubmit={handleAddExpense} />
+      </PageSection>
+      <DataTable
+        columns={budgetColumns}
+        data={expenses.map(stringifyExpense)}
       />
-
-      {/* BigBox with responsive width */}
-      <BigBox width="w-full sm:w-[800px] md:w-[900px]">
-        {loading ? (
-          <p>Loading budget details...</p>
-        ) : budget.length > 0 ? (
-          budget.map((budget, index) => (
-            <div
-              key={index}
-              className="flex flex-col w-full p-4 rounded-lg shadow-md mb-4"
-              style={{
-                backgroundColor: 'var(--color-tertiary-fixed)', 
-              }}
-            >
-              <h3 className="font-bold">{budget.name}</h3>
-              <p className="break-words">{budget.details}</p>
-            </div>
-          ))
-        ) : (
-          <p>No budget details available.</p>
-        )}
-
-        {/* Buttons inside BigBox, aligned to the bottom */}
-        <div className="flex justify-end gap-4 p-4 sm:fixed sm:bottom-4 sm:right-4 sm:w-[auto]">
-          <Button className="bg-[var(--color-on-primary-container)] text-white hover:bg-opacity-80">
-            ADD NEW EXPENSE
-          </Button>
-        </div>
-      </BigBox>
     </div>
   );
 }
