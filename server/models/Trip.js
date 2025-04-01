@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import User from './User.js';
 import {Checklist} from './Checklist.js'
-import {Budget} from "./Budget.js"
+import {BudgetItem} from "./Budget.js"
 const { Schema } = mongoose;
 
 const tripSchema= new Schema({
@@ -42,12 +42,25 @@ const tripSchema= new Schema({
         required: false
     }
   ], 
-budget:
-{
-    type: mongoose.Schema.Types.ObjectId, 
-    ref: Budget, 
-required: false
-}},
+
+  checklists:
+  [
+    {
+        type: mongoose.Schema.Types.ObjectId, 
+        ref: BudgetItem, 
+        required: false
+    }
+  ], 
+
+  budget:
+  [
+    {
+        type: mongoose.Schema.Types.ObjectId, 
+        type: mongoose.Schema.Types.ObjectId, 
+        required: false
+    }
+  ], 
+},
   {timestamps: true}
 );
 
