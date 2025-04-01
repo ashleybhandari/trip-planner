@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import Card from "@/components/ui/Card";
+import {Card} from "@/components/ui/card";
 import EditableText from "@/components/ui/EditableText";
 import Spinner from "@/components/ui/Spinner";
 import { MOCK_TRIP_DETAILS } from "@/mock/mock-trip-details";

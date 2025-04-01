@@ -1,23 +1,48 @@
 import { useEffect, useMemo, useState } from "react";
 import { z } from "zod";
+import { useParams } from "react-router";
 
 import AddExpenseForm from "@/components/budget/AddExpenseForm";
 import { addExpenseFormSchema } from "@/components/budget/add-expense-form-schema";
 import { budgetColumns } from "@/components/budget/budget-columns";
-import Card from "@/components/ui/Card";
+import {Card} from "@/components/ui/card";
 import DataTable from "@/components/ui/DataTable";
 import PageSection from "@/components/ui/PageSection";
 import Spinner from "@/components/ui/Spinner";
+import {createBudgetItem, getBudgetByTripSlug} from "@/api/budget";
+
 
 import { Expense } from "@/types/Expense";
 import { formatAsUsd } from "@/utils/format-as-usd";
 import { MOCK_EXPENSES } from "@/mock/mock-expenses";
-import { MOCK_USERS } from "@/mock/mock-expenses";
+import { MOCK_USERS } from "@/mock/mock-expenses"; 
+
+type expenseItem = {
+  expense: string;
+  amount: string;
+  date: string;
+  paidBy: string;
+  _id: string;
+
+};
+
+// const addExpenseFormSchema=z.object ({
+//   expense: string,
+//   amount: string,
+//   date: string,
+//   paidBy: string,
+//   _id: string
+
+// });
 
 export default function MyTripView() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const users = Object.values(MOCK_USERS);
+  const { tripId } = useParams();  
+  const tripSlug= tripId;
+  const token = localStorage.getItem("token"); 
+
 
   // Total amount collectively spent
   const totalSpent = useMemo(
@@ -48,7 +73,12 @@ export default function MyTripView() {
   };
 
   // Add an expense to the table
-  const handleAddExpense = (values: z.infer<typeof addExpenseFormSchema>) => {
+  const handleAddExpense = async (values: z.infer<typeof addExpenseFormSchema>) => {
+    console.log(values); 
+    const token = localStorage.getItem("token");
+    const date= new Date();
+    const newBudgetItemData = await createBudgetItem(token, tripSlug, values.name, date, values.amount, values.payer);
+
     setExpenses((prev) => [{ ...values, date: new Date() }, ...prev]);
   };
 
@@ -62,12 +92,23 @@ export default function MyTripView() {
 
   // Fetch expenses
   useEffect(() => {
+    
     setTimeout(() => {
       const fetchExpenses = async () => {
-        setExpenses(MOCK_EXPENSES.sort((a, b) => (a.date < b.date ? 1 : -1)));
+        const budgetItemsData = await getBudgetByTripSlug(token, tripSlug);
+        console.log(budgetItemsData);
+        const formattedBudgetItemsData:Expense[]=budgetItemsData.map((budget_item: any) => ({name: budget_item.expense ,
+          date: new Date(budget_item.date),
+          amount: Number(budget_item.amount),
+          payer: budget_item.paidBy})); 
+        
+        setExpenses(formattedBudgetItemsData.sort((a, b) => (a.date < b.date ? 1 : -1)));
         setIsLoading(false);
-      };
+      
+      console.log(formattedBudgetItemsData); 
+        }
 
+     
       fetchExpenses();
     }, 100);
   }, []);
