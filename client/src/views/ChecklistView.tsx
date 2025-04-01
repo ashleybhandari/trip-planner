@@ -108,18 +108,26 @@ const ChecklistApp = () => {
 
   return (
 
+    <div className="p-8">
+    {/* Checklist Title */}
+    <h1 className="text-3xl font-bold text-green-800 mb-6 text-center">
+      {localStorage.getItem("checkListName")}
+    </h1>
+    
+
 <div className="flex flex-col lg:flex-row p-8 gap-6">
+
       {/* Left: Checklist display */}
       
-      <Card className="flex-1 bg-lime-100 rounded-lg shadow-sm p-6">
-        <CardContent className="p-0">
-        <h1 className="text-3xl font-bold text-green-800 mb-6">{localStorage.getItem("checkListName")}</h1>
+      <Card className="bg-lime-200 w-2/3 shadow-none border-none p-6 h-[400px] ">
+        <CardContent className="flex-1 overflow-auto p-4">
+       
 
           {checklistItems.length === 0 ? (
             <p className="text-gray-500">No items yet. Add something!</p>
           ) : (
             checklistItems.map(({ _id, label, checked, assignedTo }) => (
-              <div key={_id} className="flex justify-between items-start mb-4">
+              <div key={_id} className="flex justify-between items-start mb-2">
                 <div className="flex items-start gap-2">
                   <Checkbox
                     checked={checked}
@@ -146,8 +154,8 @@ const ChecklistApp = () => {
       </Card>
 
       {/* Right: New Item Form */}
-      <Card className="w-full lg:w-1/3 bg-lime-200 rounded-lg shadow-sm p-6">
-        <CardContent className="p-0">
+      <Card className="w-1/2 bg-transparent  shadow-md border-none h-fit">
+        <CardContent className="p-4">
           <h2 className="text-lg font-semibold mb-4">New Item</h2>
 
           <label className="block mb-1 font-medium text-sm">Label:</label>
@@ -172,6 +180,7 @@ const ChecklistApp = () => {
           </Button>
         </CardContent>
       </Card>
+    </div>
     </div>
 
   );
