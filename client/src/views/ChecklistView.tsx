@@ -6,8 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {  createChecklistItem, getChecklistItem, deleteChecklistItem } from "@/api/checklist"; 
-
-
+import { io, Socket } from "socket.io-client";
+const socket: Socket = io("http://localhost:3000", {
+  withCredentials: true,
+});
 
 type checklistItem = {
   label: string;
@@ -36,32 +38,50 @@ const ChecklistApp = () => {
   const [newPerson, setNewPerson] = useState("");
   const [checklistName, setChecklistName] = useState("");
 
+  const fetchChecklistItems = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const checklistItemsData = await getChecklistItem(tripSlug, checklistId, token);
+
+      setChecklistName(checklistItemsData.checklist.name);
+      const formattedChecklistItems: checklistItem[] = checklistItemsData.checklist.items.map((checklist_item: any) => ({
+        label: checklist_item.label,
+        assignedTo: checklist_item.assignedTo,
+        checked: checklist_item.checked,
+        _id: checklist_item._id
+      }));
+
+      setChecklistItems(formattedChecklistItems);
+    } catch (err) {
+      console.error("Failed to load checklist:", err);
+    }
+  };
 
 
     useEffect(() => {
-      const fetchChecklistItems = async () => {
-        try {
-          const token = localStorage.getItem("token");
-          const checklistItemsData = await getChecklistItem(tripSlug, checklistId, token);
-    
-          setChecklistName(checklistItemsData.checklist.name);
-          const formattedChecklistItems: checklistItem[] = checklistItemsData.checklist.items.map((checklist_item: any) => ({
-            label: checklist_item.label,
-            assignedTo: checklist_item.assignedTo,
-            checked: checklist_item.checked,
-            _id: checklist_item._id
-          }));
-    
-          setChecklistItems(formattedChecklistItems);
-        } catch (err) {
-          console.error("Failed to load checklist:", err);
-        }
-      };
-    
       if (tripSlug && checklistId) {
+        socket.emit("join-trip", tripSlug);
+    
+        const handleChecklistUpdate = (data: any) => {
+          if (
+            data.checklistId.toString() === checklistId.toString() &&
+            data.tripSlug === tripSlug
+          ) {
+            console.log("Received socket update, refetching checklist...");
+            fetchChecklistItems();
+          }
+        };
+    
+        socket.on("checklist-updated", handleChecklistUpdate);
+    
+       
         fetchChecklistItems();
+        return () => {
+          socket.off("checklist-updated", handleChecklistUpdate);
+        };
       }
     }, [tripSlug, checklistId]);
+    
     
 
     const toggleCheck = (_id: string) => {
