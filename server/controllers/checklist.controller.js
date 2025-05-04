@@ -2,9 +2,9 @@ import slugify from "slugify";
 import { nanoid } from 'nanoid';
 import Trip from "../models/Trip.js"; 
 import {Checklist, ChecklistItem} from "../models/Checklist.js";
+import { getIO } from "../sockets/socket.js";
 
-// ---------- API calls for Checklist  ----------
-// app.get("/api/trip/slug/:slug/checklist/:checklist_id", verifyToken, 
+
 export const getChecklistById=async (req, res) => {
   const { slug, checklist_id } = req.params;
   const userId = req.user.id;
@@ -43,7 +43,7 @@ export const getChecklistById=async (req, res) => {
   }
 };
 
-// app.post("/api/trip/slug/:slug/checklist/:checklist_id", verifyToken, 
+
 export const addChecklistItem=async (req, res) => {
   const { slug, checklist_id } = req.params;
   const { label, assignedTo, checked=false} = req.body;
@@ -81,6 +81,14 @@ export const addChecklistItem=async (req, res) => {
     console.log(`label: ${label}`); 
     checklist.items.push(checklistItem);
     await checklist.save();
+    
+   
+    const io = getIO();
+    
+    io.to(slug.toString()).emit("checklist-updated", {
+      checklistId:checklist_id,
+      tripSlug: slug,
+    });
   
     res.status(201).json(checklistItem);
 
@@ -91,7 +99,7 @@ export const addChecklistItem=async (req, res) => {
 };
 
 
-// app.delete("/api/trip/slug/:slug/checklist/:checklist_id/item/:checklist_item_id", verifyToken, 
+
 export const deleteChecklisItem=  async (req, res) => {
   const { slug, checklist_id, checklist_item_id } = req.params;
   const userId = req.user.id;
@@ -126,6 +134,13 @@ export const deleteChecklisItem=  async (req, res) => {
       }
     });
     
+    // io.emit("checklist-updated", { tripSlug: slug, checklistId: checklist_id });
+    const io = getIO();
+    io.to(slug.toString()).emit("checklist-updated", {
+      checklistId:checklist_id,
+      tripSlug: slug,
+    });
+  
   
     res.status(201).json({ response: "Success" });
 
@@ -135,8 +150,7 @@ export const deleteChecklisItem=  async (req, res) => {
   }
 };
 
-//create empty checklist 
-// app.post("/api/trips/slug/:slug/checklists", verifyToken,
+
 export const createEmptyChecklist= async (req, res) => {
     const { slug } = req.params;
     const userId = req.user.id;
@@ -163,9 +177,7 @@ export const createEmptyChecklist= async (req, res) => {
     res.status(201).json(checklist);
   };
   
-// get all checklists associated with a trip 
 
-// app.get("/api/trips/slug/:slug/checklists", verifyToken, 
 export const getAllChecklists=async (req, res) => {
     const { slug } = req.params;
     const userId = req.user.id;
