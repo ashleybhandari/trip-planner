@@ -1,8 +1,8 @@
 import Trip from "../models/Trip.js"; 
 import { BudgetItem } from "../models/Budget.js";
+import { getIO } from "../sockets/socket.js";
 
 
-// ---------- API calls for Budget  ----------
 export const getBudget = async (req, res) => {
   const { slug } = req.params;
   const userId = req.user.id;
@@ -20,7 +20,7 @@ export const getBudget = async (req, res) => {
     if (!isUserInTrip) {
       return res.status(403).json({ error: "Access denied" });
     }
-
+  
     // 3. Fetch and return budget items
     return res.status(200).json(trip.budget);
   
@@ -58,6 +58,12 @@ export const  addToBudget = async (req, res) => {
    
     trip.budget.push(budgetItem._id);
     await trip.save();
+    
+    const io = getIO();
+    io.to(slug.toString()).emit("budget-updated", {
+      tripSlug: slug,
+    });
+  
   
     res.status(201).json(budgetItem);
 

@@ -10,7 +10,10 @@ import DataTable from "@/components/ui/DataTable";
 import PageSection from "@/components/ui/PageSection";
 import Spinner from "@/components/ui/Spinner";
 import {createBudgetItem, getBudgetByTripSlug} from "@/api/budget";
-
+import { io, Socket } from "socket.io-client";
+const socket: Socket = io("http://localhost:3000", {
+  withCredentials: true,
+}); 
 
 import { Expense } from "@/types/Expense";
 import { formatAsUsd } from "@/utils/format-as-usd";
@@ -23,6 +26,7 @@ type expenseItem = {
   date: string;
   paidBy: string;
   _id: string;
+  
 
 };
 
@@ -67,7 +71,7 @@ export default function MyTripView() {
   // Add an expense to the table
   const handleAddExpense = async (values: z.infer<typeof addExpenseFormSchema>) => {
     console.log(values); 
-    const token = localStorage.getItem("token");
+    
     const date= new Date();
     const newBudgetItemData = await createBudgetItem(token, tripSlug, values.name, date, values.amount, values.payer);
 
@@ -81,29 +85,46 @@ export default function MyTripView() {
     amount: formatAsUsd(e.amount),
     payer: e.payer,
   });
+  const fetchExpenses = async () => {
+    try {
+      const budgetItemsData = await getBudgetByTripSlug(token, tripSlug);
+      const formattedBudgetItemsData: Expense[] = budgetItemsData.map((budget_item: any) => ({
+        name: budget_item.expense,
+        date: new Date(budget_item.date),
+        amount: Number(budget_item.amount),
+        payer: budget_item.paidBy,
+      }));
 
+      setExpenses(formattedBudgetItemsData.sort((a, b) => (a.date < b.date ? 1 : -1)));
+    } catch (err) {
+      console.error("Error fetching budget:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
  
-  useEffect(() => {
-    const fetchExpenses = async () => {
-      try {
-        const budgetItemsData = await getBudgetByTripSlug(token, tripSlug);
-        const formattedBudgetItemsData: Expense[] = budgetItemsData.map((budget_item: any) => ({
-          name: budget_item.expense,
-          date: new Date(budget_item.date),
-          amount: Number(budget_item.amount),
-          payer: budget_item.paidBy,
-        }));
+  useEffect(() => { 
+     
   
-        setExpenses(formattedBudgetItemsData.sort((a, b) => (a.date < b.date ? 1 : -1)));
-      } catch (err) {
-        console.error("Error fetching budget:", err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-  
-    if (tripSlug && token) fetchExpenses();
-  }, [tripSlug, token]);
+    if (tripSlug ){ 
+      socket.emit("join-trip", tripSlug); 
+      fetchExpenses();  
+
+      const handleBudgetUpdate = (data: any) => {
+        if (data.tripSlug === tripSlug) 
+          {
+          console.log("Received socket update, refetching checklist...");
+          fetchExpenses();  
+        }
+      };
+      socket.on("budget-updated", handleBudgetUpdate);
+      fetchExpenses(); 
+      return () => {
+        socket.off("checklist-updated", handleBudgetUpdate);
+      };
+    
+
+  }}, [tripSlug]);
   
   return (
     <>
