@@ -37,34 +37,32 @@ const ChecklistApp = () => {
   const [checklistName, setChecklistName] = useState("");
 
 
+
     useEffect(() => {
       const fetchChecklistItems = async () => {
         try {
-      const token = localStorage.getItem("token");
-      const checklistItemsData = await getChecklistItem(tripSlug, checklistId, token);
-        
-  
-  
-          // Map backend response to frontend format
-      console.log("heeeere", checklistItemsData.checklist.items);
-      console.log("wohoo", checklistItemsData.checklist.name );
-      setChecklistName(checklistItemsData.checklist.name);
-      const formattedChecklistItems: checklistItem[] = checklistItemsData.checklist.items.map((checklist_item: any) => ({
+          const token = localStorage.getItem("token");
+          const checklistItemsData = await getChecklistItem(tripSlug, checklistId, token);
+    
+          setChecklistName(checklistItemsData.checklist.name);
+          const formattedChecklistItems: checklistItem[] = checklistItemsData.checklist.items.map((checklist_item: any) => ({
             label: checklist_item.label,
-            assignedTo: checklist_item.assignedTo, 
+            assignedTo: checklist_item.assignedTo,
             checked: checklist_item.checked,
             _id: checklist_item._id
           }));
-  
+    
           setChecklistItems(formattedChecklistItems);
         } catch (err) {
-          
-          console.error("Failed to load trips:", err);
+          console.error("Failed to load checklist:", err);
         }
       };
-  
-      fetchChecklistItems();
-    }, []);
+    
+      if (tripSlug && checklistId) {
+        fetchChecklistItems();
+      }
+    }, [tripSlug, checklistId]);
+    
 
     const toggleCheck = (_id: string) => {
       setChecklistItems((prev) =>

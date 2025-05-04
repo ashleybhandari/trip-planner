@@ -26,14 +26,6 @@ type expenseItem = {
 
 };
 
-// const addExpenseFormSchema=z.object ({
-//   expense: string,
-//   amount: string,
-//   date: string,
-//   paidBy: string,
-//   _id: string
-
-// });
 
 export default function MyTripView() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -90,29 +82,29 @@ export default function MyTripView() {
     payer: e.payer,
   });
 
-  // Fetch expenses
+ 
   useEffect(() => {
-    
-    setTimeout(() => {
-      const fetchExpenses = async () => {
+    const fetchExpenses = async () => {
+      try {
         const budgetItemsData = await getBudgetByTripSlug(token, tripSlug);
-        console.log(budgetItemsData);
-        const formattedBudgetItemsData:Expense[]=budgetItemsData.map((budget_item: any) => ({name: budget_item.expense ,
+        const formattedBudgetItemsData: Expense[] = budgetItemsData.map((budget_item: any) => ({
+          name: budget_item.expense,
           date: new Date(budget_item.date),
           amount: Number(budget_item.amount),
-          payer: budget_item.paidBy})); 
-        
+          payer: budget_item.paidBy,
+        }));
+  
         setExpenses(formattedBudgetItemsData.sort((a, b) => (a.date < b.date ? 1 : -1)));
+      } catch (err) {
+        console.error("Error fetching budget:", err);
+      } finally {
         setIsLoading(false);
-      
-      console.log(formattedBudgetItemsData); 
-        }
-
-     
-      fetchExpenses();
-    }, 100);
-  }, []);
-
+      }
+    };
+  
+    if (tripSlug && token) fetchExpenses();
+  }, [tripSlug, token]);
+  
   return (
     <>
       {isLoading ? (

@@ -1,5 +1,5 @@
 export async function getBudgetByTripSlug(token: string, tripSlug: string) {
-    const serverUrl = import.meta.env.VITE_SERVER_URL;
+  const serverUrl = import.meta.env.VITE_SERVER_URL;
     const res = await fetch(`${serverUrl}/api/trip/slug/${tripSlug}/budget`, {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -13,7 +13,7 @@ export async function getBudgetByTripSlug(token: string, tripSlug: string) {
 
     console.log(res);
     const data = await res.json();
-    console.log(data);
+   
     return data;
   
     // return await res.json();

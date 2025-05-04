@@ -4,7 +4,7 @@ export default function LogoutButton() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     const serverUrl = import.meta.env.VITE_SERVER_URL;
-    const logoutUrl = `${serverUrl}/logout`;
+    const logoutUrl = `${serverUrl}/auth/logout`;
     window.location.href = logoutUrl;
   };
 

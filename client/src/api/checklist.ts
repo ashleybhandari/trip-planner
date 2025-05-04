@@ -41,10 +41,10 @@ export async function createChecklistByTripSlug(tripSlug: string, name: string, 
     }
     console.log(res);
     const data = await res.json();
-    console.log(data);
+   
     return data;
 
-    // return await res.json(); // should return the new checklist
+  
   }
 
 
@@ -90,7 +90,7 @@ export async function getChecklistItem(tripSlug: string, checklistId: string, to
 
     console.log(res);
     const data = await res.json();
-    console.log(data);
+    console.log("working",data);
     return data;
   
   
