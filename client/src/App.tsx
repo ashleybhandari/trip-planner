@@ -11,6 +11,7 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AuthCallbackView from "@/views/AuthCallbackView";
 import DashboardView from "./views/DashboardView";
 
+
 function App() {
   return (
     <BrowserRouter>
