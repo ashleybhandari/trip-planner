@@ -6,7 +6,7 @@ import passport from "passport";
 import dotenv from "dotenv";
 import cors from "cors";
 import http from "http";
-import { Server } from "socket.io";
+import { initSocket } from "./sockets/socket.js";
 
 
 dotenv.config();
@@ -19,6 +19,13 @@ import checklistRoutes from "./routes/checklist.routes.js";
 
 const app = express();
 const server = http.createServer(app);
+// export const io = new Server(server, {
+//   cors: {
+//     origin: "http://localhost:5173", // frontend URL
+//     methods: ["GET", "POST", "PATCH", "DELETE"]
+//   }
+// }); 
+initSocket(server);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
