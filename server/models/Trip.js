@@ -27,6 +27,24 @@ const tripSchema= new Schema({
   }
 
   ], 
+  dates:
+  { startDate: {
+     type: Date, 
+     required: false,
+  }, 
+  endDate: 
+  {
+    type: Date, 
+    required: false,
+  }
+
+     
+  }, 
+  status:
+  {
+    type: Boolean, 
+    required: false
+  },
 //   users_names:
 //   [{
 //     type: strig, 
