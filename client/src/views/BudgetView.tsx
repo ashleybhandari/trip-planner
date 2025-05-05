@@ -5,20 +5,23 @@ import { useParams } from "react-router";
 import AddExpenseForm from "@/components/budget/AddExpenseForm";
 import { addExpenseFormSchema } from "@/components/budget/add-expense-form-schema";
 import { budgetColumns } from "@/components/budget/budget-columns";
-import {Card} from "@/components/ui/card";
+import { Card } from "@/components/ui/Card";
 import DataTable from "@/components/ui/DataTable";
 import PageSection from "@/components/ui/PageSection";
 import Spinner from "@/components/ui/Spinner";
-import {createBudgetItem, getBudgetByTripSlug} from "@/api/budget";
+import {
+  createBudgetItem,
+  deleteBudgetItem,
+  getBudgetByTripSlug,
+} from "@/api/budget";
 import { io, Socket } from "socket.io-client";
 const socket: Socket = io("http://localhost:3000", {
   withCredentials: true,
-}); 
+});
 
 import { Expense } from "@/types/Expense";
 import { formatAsUsd } from "@/utils/format-as-usd";
-import { MOCK_EXPENSES } from "@/mock/mock-expenses";
-import { MOCK_USERS } from "@/mock/mock-expenses"; 
+import { MOCK_USERS } from "@/mock/mock-expenses";
 
 type expenseItem = {
   expense: string;
@@ -26,19 +29,15 @@ type expenseItem = {
   date: string;
   paidBy: string;
   _id: string;
-  
-
 };
-
 
 export default function MyTripView() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const users = Object.values(MOCK_USERS);
-  const { tripId } = useParams();  
-  const tripSlug= tripId;
-  const token = localStorage.getItem("token"); 
-
+  const { tripId } = useParams();
+  const tripSlug = tripId;
+  const token = localStorage.getItem("token");
 
   // Total amount collectively spent
   const totalSpent = useMemo(
@@ -69,13 +68,28 @@ export default function MyTripView() {
   };
 
   // Add an expense to the table
-  const handleAddExpense = async (values: z.infer<typeof addExpenseFormSchema>) => {
-    console.log(values); 
-    
-    const date= new Date();
-    const newBudgetItemData = await createBudgetItem(token, tripSlug, values.name, date, values.amount, values.payer);
+  const handleAddExpense = async (
+    values: z.infer<typeof addExpenseFormSchema>
+  ) => {
+    const date = new Date();
+    const newBudgetItemData = await createBudgetItem(
+      token,
+      tripSlug,
+      values.name,
+      date,
+      values.amount,
+      values.payer
+    );
 
     setExpenses((prev) => [{ ...values, date: new Date() }, ...prev]);
+  };
+
+  const handleDeleteExpense = async (index: number) => {
+    const id = expenses.find((e, i) => i == index)?.id;
+    if (token && tripSlug && id) {
+      await deleteBudgetItem(token, tripSlug, id);
+      setExpenses((prev) => prev.filter((e, i) => i !== index));
+    }
   };
 
   // Make expense more reader-friendly so it can be supplied to the table
@@ -85,47 +99,49 @@ export default function MyTripView() {
     amount: formatAsUsd(e.amount),
     payer: e.payer,
   });
+
   const fetchExpenses = async () => {
     try {
       const budgetItemsData = await getBudgetByTripSlug(token, tripSlug);
-      const formattedBudgetItemsData: Expense[] = budgetItemsData.map((budget_item: any) => ({
-        name: budget_item.expense,
-        date: new Date(budget_item.date),
-        amount: Number(budget_item.amount),
-        payer: budget_item.paidBy,
-      }));
+      const formattedBudgetItemsData: Expense[] = budgetItemsData.map(
+        (budget_item: any) => ({
+          id: budget_item._id,
+          name: budget_item.expense,
+          date: new Date(budget_item.date),
+          amount: Number(budget_item.amount),
+          payer: budget_item.paidBy,
+        })
+      );
 
-      setExpenses(formattedBudgetItemsData.sort((a, b) => (a.date < b.date ? 1 : -1)));
+      setExpenses(
+        formattedBudgetItemsData.sort((a, b) => (a.date < b.date ? 1 : -1))
+      );
     } catch (err) {
       console.error("Error fetching budget:", err);
     } finally {
       setIsLoading(false);
     }
   };
- 
-  useEffect(() => { 
-     
   
-    if (tripSlug ){ 
-      socket.emit("join-trip", tripSlug); 
-      fetchExpenses();  
+  useEffect(() => {
+    if (tripSlug) {
+      socket.emit("join-trip", tripSlug);
+      fetchExpenses();
 
       const handleBudgetUpdate = (data: any) => {
-        if (data.tripSlug === tripSlug) 
-          {
+        if (data.tripSlug === tripSlug) {
           console.log("Received socket update, refetching checklist...");
-          fetchExpenses();  
+          fetchExpenses();
         }
       };
       socket.on("budget-updated", handleBudgetUpdate);
-      fetchExpenses(); 
+      fetchExpenses();
       return () => {
         socket.off("checklist-updated", handleBudgetUpdate);
       };
-    
+    }
+  }, [tripSlug]);
 
-  }}, [tripSlug]);
-  
   return (
     <>
       {isLoading ? (
@@ -149,6 +165,7 @@ export default function MyTripView() {
           <DataTable
             columns={budgetColumns}
             data={expenses.map(stringifyExpense)}
+            onDeleteRow={handleDeleteExpense}
           />
         </div>
       )}
