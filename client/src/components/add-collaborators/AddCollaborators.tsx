@@ -15,24 +15,31 @@ export default function AddCollaborators({
   const [emails, setEmails] = useState<string[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
 
+  // remove email when X button is clicked
   const handleDeleteEmail = (email: string) => {
     setEmails((prev) => prev.filter((e) => e !== email));
   };
 
+  // handle input changes
   const handleChange = (e) => {
-    const input = e.target.value;
-    const position = e.target.selectionStart - 1;
+    const input = e.target.value; // user input
+    const position = e.target.selectionStart - 1; // cursor position
     let newEmailAdded = false;
 
+    // if user inputted a space or comma, check if we can add a new email
     if (input.charAt(position) === " " || input.charAt(position) === ",")
       newEmailAdded = addToEmails(input, position);
 
+    // if no email was added, update field with inputted character
     if (!newEmailAdded) setInputValue(input);
   };
 
+  // detect key presses
   const handleKeyDown = (e) => {
+    // if enter, add trailing text to emails
     if (e.key === "Enter") addToEmails(inputValue, inputValue.length);
 
+    // if backspace, remove last email (if possible)
     if (
       e.key === "Backspace" &&
       e.target.selectionStart === 0 &&
@@ -42,18 +49,20 @@ export default function AddCollaborators({
     }
   };
 
+  // add to emails (if possible)
   const addToEmails = (input: string, position: number) => {
-    const newEmail = input.substring(0, position).trim();
+    const newEmail = input.substring(0, position).trim(); // text up to position
 
     if (newEmail) {
       setEmails((prev) => [...prev, newEmail]);
-      setInputValue(input.slice(position + 1));
+      setInputValue(input.slice(position + 1)); // text after position
       return true;
     }
     
     return false;
   };
 
+  // set collaborators property in parent's form
   useEffect(() => {
     setCollaborators(inputValue.trim() ? [...emails, inputValue] : emails);
   }, [emails, inputValue]);
