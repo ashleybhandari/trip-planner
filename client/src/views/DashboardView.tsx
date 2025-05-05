@@ -10,19 +10,48 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
 import LogoutButton from "@/components/auth/LogoutButton";
 import { useNavigate } from "react-router-dom";
+import AddCollaborators from "@/components/add-collaborators/AddCollaborators";
 
 type Trip = {
   name: string;
   destination: string;
   members: string[];
   slug: string;
-
 };
 
-
+const archivedTrips = {
+  2024: [
+    {
+      name: "TRIP NAME #1",
+      destination: "Destination",
+      members: "Me, Name1, Name2, Name3, and Name4",
+    },
+    {
+      name: "TRIP NAME #2",
+      destination: "Destination",
+      members: "Me, Name1, Name2, Name3",
+    },
+    {
+      name: "TRIP NAME #3",
+      destination: "Destination",
+      members: "Me, Name1",
+    },
+  ],
+  2023: [
+    {
+      name: "TRIP NAME #1",
+      destination: "Destination",
+      members: "Me, Name1, Name2, Name3, and Name4",
+    },
+    {
+      name: "TRIP NAME #2",
+      destination: "Destination",
+      members: "Me, Name1, Name2, Name3",
+    },
+  ],
+};
 
 const DashboardView = () => {
   const navigate = useNavigate();
@@ -30,7 +59,7 @@ const DashboardView = () => {
   const [form, setForm] = useState({
     name: "",
     destination: "",
-    collaborators: "",
+    collaborators: [],
   });
   const [open, setOpen] = useState(false);
 
@@ -50,12 +79,13 @@ const DashboardView = () => {
         const formattedTrips: Trip[] = data.map((trip: any) => ({
           name: trip.tripName,
           destination: trip.destinations,
-          members: trip.users.map((u: any) => u.name || u.email || "Collaborator"),
+          members: trip.users.map(
+            (u: any) => u.name || u.email || "Collaborator"
+          ),
           slug: trip.tripSlug,
-        })); 
-      
+        }));
 
-        setTrips(formattedTrips);  
+        setTrips(formattedTrips);
         console.log(data);
       } catch (err) {
         console.error("Failed to load trips:", err);
@@ -64,6 +94,10 @@ const DashboardView = () => {
 
     fetchTrips();
   }, []);
+
+  const setCollaborators = (collaborators: string[]) => {
+    setForm((prev) => ({ ...prev, collaborators }));
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
@@ -83,10 +117,7 @@ const DashboardView = () => {
         body: JSON.stringify({
           tripName: form.name,
           destinations: form.destination,
-          collaboratorEmails: form.collaborators
-            .split(",")
-            .map((e) => e.trim())
-            .filter((e) => e),
+          collaboratorEmails: form.collaborators,
         }),
       });
 
@@ -97,39 +128,28 @@ const DashboardView = () => {
       const trip: Trip = {
         name: newTrip.tripName,
         destination: newTrip.destinations,
-        members: newTrip.users.map((u: any) => u.name || u.email || "Collaborator"),
+        members: newTrip.users.map(
+          (u: any) => u.name || u.email || "Collaborator"
+        ),
         slug: newTrip.tripSlug,
       };
 
       setTrips((prev) => [...prev, trip]);
-      setForm({ name: "", destination: "", collaborators: "" });
+      setForm({ name: "", destination: "", collaborators: [] });
       setOpen(false);
     } catch (err) {
       console.error("Error creating trip:", err);
     }
   };
-
-  const archivedTrips = {
-    2024: [
-      { name: "TRIP NAME #1", destination: "Destination", members: "Me, Name1, Name2, Name3, and Name4" },
-      { name: "TRIP NAME #2", destination: "Destination", members: "Me, Name1, Name2, Name3" },
-      { name: "TRIP NAME #3", destination: "Destination", members: "Me, Name1" },
-    ],
-    2023: [
-      { name: "TRIP NAME #1", destination: "Destination", members: "Me, Name1, Name2, Name3, and Name4" },
-      { name: "TRIP NAME #2", destination: "Destination", members: "Me, Name1, Name2, Name3" },
-    ],
-  };
-
   return (
     <div className="bg-gray-100 min-h-screen">
       <nav className="bg-green-700 text-white p-4 flex justify-between items-center">
         <h1 className="text-xl font-bold">trip planner</h1>
         {/* <button className="bg-white text-green-700 px-4 py-2 rounded-md">Sign Out</button> */}
-         <LogoutButton />
+        <LogoutButton />
       </nav>
 
-      <div className="max-w-4xl mx-auto p-6">
+      <div className="w-4xl mx-auto p-6">
         <h2 className="text-lg font-semibold text-center mb-4">my trips</h2>
         <div className="grid grid-cols-2 gap-4 justify-center">
           {/* Create Trip Dialog */}
@@ -139,31 +159,36 @@ const DashboardView = () => {
                 <FaPlus className="text-3xl text-gray-500" />
               </div>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-md">
+            <DialogContent className="flex flex-col sm:w-md">
               <DialogHeader>
                 <DialogTitle>Create a new trip</DialogTitle>
                 <DialogDescription>
-                  Start off by adding a few details. You can always change these later.
+                  Start off by adding a few details. You can always change these
+                  later.
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700">Trip Name</label>
-                  <Input name="name" value={form.name} onChange={handleChange} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Destination(s)</label>
-                  <Input name="destination" value={form.destination} onChange={handleChange} />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Collaborator Email(s)</label>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Trip Name
+                  </label>
                   <Input
-                    name="collaborators"
-                    placeholder="email1@example.com, email2@example.com"
-                    value={form.collaborators}
+                    name="name"
+                    value={form.name}
                     onChange={handleChange}
                   />
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700">
+                    Destination(s)
+                  </label>
+                  <Input
+                    name="destination"
+                    value={form.destination}
+                    onChange={handleChange}
+                  />
+                </div>
+                <AddCollaborators setCollaborators={setCollaborators} />
                 <div className="flex justify-end pt-2">
                   <Button onClick={handleCreate}>Create</Button>
                 </div>
