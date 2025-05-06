@@ -11,21 +11,41 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { addExpenseFormSchema } from "./add-expense-form-schema";
 
 type AddExpenseFormProps = {
+  collaborators: string[];
   onSubmit: (values: z.infer<typeof addExpenseFormSchema>) => void;
 };
 
-export default function AddExpenseForm({ onSubmit }: AddExpenseFormProps) {
+export default function AddExpenseForm({
+  collaborators,
+  onSubmit,
+}: AddExpenseFormProps) {
   const form = useForm<z.infer<typeof addExpenseFormSchema>>({
     resolver: zodResolver(addExpenseFormSchema),
   });
 
+  const handleSubmit = (values: z.infer<typeof addExpenseFormSchema>) => {
+    onSubmit(values);
+    form.reset({
+      name: "",
+      amount: undefined,
+      payer: "",
+    });
+  };
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleSubmit)}
         className="flex flex-col sm:flex-row items-start gap-2"
       >
         <FormField
@@ -48,7 +68,7 @@ export default function AddExpenseForm({ onSubmit }: AddExpenseFormProps) {
             <FormItem>
               <FormLabel>Amount</FormLabel>
               <FormControl>
-                <Input {...field} />
+                <Input {...field} value={field.value ?? ""} />
               </FormControl>
               <FormMessage className="text-error" />
             </FormItem>
@@ -60,9 +80,22 @@ export default function AddExpenseForm({ onSubmit }: AddExpenseFormProps) {
           render={({ field }) => (
             <FormItem>
               <FormLabel>Payer</FormLabel>
-              <FormControl>
-                <Input {...field} />
-              </FormControl>
+              <Select
+                onValueChange={field.onChange}
+                defaultValue={field.value}
+                value={field.value ?? ""}
+              >
+                <FormControl className="min-w-48">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select who paid" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent className="bg-white">
+                  {collaborators.map((name) => (
+                    <SelectItem value={name}>{name}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage className="text-error" />
             </FormItem>
           )}

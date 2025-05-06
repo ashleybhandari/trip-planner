@@ -72,7 +72,7 @@ export default function MyTripView() {
     values: z.infer<typeof addExpenseFormSchema>
   ) => {
     const date = new Date();
-    const newBudgetItemData = await createBudgetItem(
+    await createBudgetItem(
       token,
       tripSlug,
       values.name,
@@ -85,10 +85,11 @@ export default function MyTripView() {
   };
 
   const handleDeleteExpense = async (index: number) => {
-    const id = expenses.find((e, i) => i == index)?.id;
+    const id = expenses.find((_, i) => i == index)?.id;
+
     if (token && tripSlug && id) {
       await deleteBudgetItem(token, tripSlug, id);
-      setExpenses((prev) => prev.filter((e, i) => i !== index));
+      setExpenses((prev) => prev.filter((e) => e.id !== id));
     }
   };
 
@@ -122,7 +123,7 @@ export default function MyTripView() {
       setIsLoading(false);
     }
   };
-  
+
   useEffect(() => {
     if (tripSlug) {
       socket.emit("join-trip", tripSlug);
@@ -160,7 +161,10 @@ export default function MyTripView() {
             ))}
           </div>
           <PageSection className="flex items-center p-5">
-            <AddExpenseForm onSubmit={handleAddExpense} />
+            <AddExpenseForm
+              collaborators={Object.values(MOCK_USERS)}
+              onSubmit={handleAddExpense}
+            />
           </PageSection>
           <DataTable
             columns={budgetColumns}
