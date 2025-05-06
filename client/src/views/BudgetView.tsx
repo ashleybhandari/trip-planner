@@ -50,10 +50,7 @@ export default function MyTripView() {
     () =>
       users.map((user) => {
         const spent = expenses.reduce(
-          (acc, cur) =>
-            cur.payer.toLowerCase() === user.toLowerCase()
-              ? acc + cur.amount
-              : acc,
+          (acc, cur) => (cur.payer === user ? acc + cur.amount : acc),
           0
         );
         const owes = (totalSpent - spent) / users.length;
@@ -64,7 +61,7 @@ export default function MyTripView() {
 
   // Get a particular user's balance
   const getBalance = (user: string) => {
-    return balances.find((b) => b.user.toLowerCase() === user.toLowerCase());
+    return balances.find((b) => b.user === user);
   };
 
   // Add an expense to the table
