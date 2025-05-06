@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import Email from "./Email";
+import { validateEmail } from "./validate-email";
 
 type AddCollaboratorsProps = {
   setCollaborators: (collaborators: string[]) => void;
@@ -58,7 +59,7 @@ export default function AddCollaborators({
       setInputValue(input.slice(position + 1)); // text after position
       return true;
     }
-    
+
     return false;
   };
 
@@ -103,6 +104,11 @@ export default function AddCollaborators({
           </li>
         </ul>
       </div>
+      {emails.some((e) => !validateEmail(e)) && (
+        <div className="text-xs text-error m-1">
+          Warning: One or more of the above emails is invalid.
+        </div>
+      )}
     </div>
   );
 }
