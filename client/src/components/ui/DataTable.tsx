@@ -15,14 +15,18 @@ import {
 } from "@/components/ui/table";
 
 import PageSection from "./PageSection";
+import { Trash2 } from "lucide-react";
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  onDeleteRow: (index: number) => void;
 }
 
 export default function DataTable<TData, TValue>({
   columns,
   data,
+  onDeleteRow,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -31,8 +35,7 @@ export default function DataTable<TData, TValue>({
   });
 
   return (
-    
-      <PageSection>
+    <PageSection>
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -49,6 +52,7 @@ export default function DataTable<TData, TValue>({
                   </TableHead>
                 );
               })}
+              <TableHead>Delete</TableHead>
             </TableRow>
           ))}
         </TableHeader>
@@ -64,6 +68,14 @@ export default function DataTable<TData, TValue>({
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
+                <TableCell>
+                  <button
+                    onClick={() => onDeleteRow(parseInt(row.id))}
+                    className="hover:text-primary active:text-primary/80 cursor-pointer"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </TableCell>
               </TableRow>
             ))
           ) : (
