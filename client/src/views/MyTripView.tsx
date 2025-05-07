@@ -8,17 +8,36 @@ import { TripDetails } from "@/types/TripDetails";
 import TextArea from "@/components/ui/TextArea";
 import { useNavigate } from "react-router";
 import BigBox from "@/components/my-trip/BigBox";
+import { archiveTripsByTripId } from "@/api/trip";
 
 export default function MyTripView() {
   const [tripDetails, setTripDetails] = useState<TripDetails>({
     name: "My Trip",
     destinations: [],
     collaborators: [],
+    id: ""
+    
   });
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
 
   const goToDashboard = () => navigate("/dashboard");
+
+ 
+
+  const handleEndTrip = async () => {
+    //get user token 
+    try{
+      const token = localStorage.getItem("token");
+      await archiveTripsByTripId(id, token);
+      goToDashboard()
+    }
+    catch(error){
+      console.log("failed to archive", error)
+    }
+    
+
+  }
 
   // Save name to tripDetails when user stops editing
   const handleSaveName = (name: string) =>
@@ -91,7 +110,7 @@ export default function MyTripView() {
               Delete Trip
             </Button>
             <Button
-              onClick={goToDashboard}
+              onClick={handleEndTrip}
               variant="secondary"
               className="text-on-secondary"
             >

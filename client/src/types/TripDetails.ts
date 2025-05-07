@@ -4,4 +4,6 @@ export type TripDetails = {
   startDate?: Date;
   endDate?: Date;
   collaborators: string[];
+  id: string, 
+  archived: true
 };

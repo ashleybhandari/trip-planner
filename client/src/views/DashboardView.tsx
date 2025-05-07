@@ -19,39 +19,43 @@ type Trip = {
   destination: string;
   members: string[];
   slug: string;
+  archived: boolean;
 };
 
-const archivedTrips = {
-  2024: [
-    {
-      name: "TRIP NAME #1",
-      destination: "Destination",
-      members: "Me, Name1, Name2, Name3, and Name4",
-    },
-    {
-      name: "TRIP NAME #2",
-      destination: "Destination",
-      members: "Me, Name1, Name2, Name3",
-    },
-    {
-      name: "TRIP NAME #3",
-      destination: "Destination",
-      members: "Me, Name1",
-    },
-  ],
-  2023: [
-    {
-      name: "TRIP NAME #1",
-      destination: "Destination",
-      members: "Me, Name1, Name2, Name3, and Name4",
-    },
-    {
-      name: "TRIP NAME #2",
-      destination: "Destination",
-      members: "Me, Name1, Name2, Name3",
-    },
-  ],
-};
+//COMMENTING OUT ARCHIVED TRIPS MOCK DATA FOR NOW
+
+// const archivedTrips = {
+//   2024: [
+//     {
+//       name: "TRIP NAME #1",
+//       destination: "Destination",
+//       members: "Me, Name1, Name2, Name3, and Name4",
+//     },
+//     {
+//       name: "TRIP NAME #2",
+//       destination: "Destination",
+//       members: "Me, Name1, Name2, Name3",
+//     },
+//     {
+//       name: "TRIP NAME #3",
+//       destination: "Destination",
+//       members: "Me, Name1",
+//     },
+//   ],
+//   2023: [
+//     {
+//       name: "TRIP NAME #1",
+//       destination: "Destination",
+//       members: "Me, Name1, Name2, Name3, and Name4",
+//     },
+//     {
+//       name: "TRIP NAME #2",
+//       destination: "Destination",
+//       members: "Me, Name1, Name2, Name3",
+//     },
+//   ],
+// };
+
 
 const DashboardView = () => {
   const navigate = useNavigate();
@@ -63,6 +67,39 @@ const DashboardView = () => {
   });
   const [open, setOpen] = useState(false);
 
+  const [archived_Trips, setArchived_Trips] = useState<Trip[]>([]);
+
+  // WORKS WITH THIS MOCK DATA CAN BE REMOVED LATER
+  // useEffect(() => {
+  //   const fetchTrips = async () => {
+  //     // Simulate waiting for a fetch call
+  //     await new Promise((resolve) => setTimeout(resolve, 200));
+  
+  //     // Simulated data
+  //     const mockData = [
+  //       {
+  //         name: "Archived Trip",
+  //         destination: "Rome",
+  //         members: ["You", "Friend A"],
+  //         slug: "rome-trip-2024",
+  //         archived: true,
+  //       },
+  //       {
+  //         name: "Active Trip",
+  //         destination: "Tokyo",
+  //         members: ["You", "Friend B"],
+  //         slug: "tokyo-trip-2024",
+  //         archived: false,
+  //       },
+  //     ];
+  
+  //     setTrips(mockData.filter((t) => !t.archived));
+  //     setArchived_Trips(mockData.filter((t) => t.archived));
+  //   };
+  
+  //   fetchTrips();
+  // }, []);
+ 
   useEffect(() => {
     const fetchTrips = async () => {
       try {
@@ -85,7 +122,11 @@ const DashboardView = () => {
           slug: trip.tripSlug,
         }));
 
+        const archived: Trip[] = formattedTrips.filter((trip) => trip.archived)
+        
+
         setTrips(formattedTrips);
+        setArchived_Trips(archived);
         console.log(data);
       } catch (err) {
         console.error("Failed to load trips:", err);
@@ -212,20 +253,15 @@ const DashboardView = () => {
 
         {/* Archive Section */}
         <h2 className="text-lg font-semibold text-center mt-8 mb-4">archive</h2>
-        {Object.entries(archivedTrips).map(([year, trips]) => (
-          <div key={year}>
-            <h3 className="text-gray-500 font-semibold mb-2">– {year} –</h3>
-            <div className="grid grid-cols-3 gap-4">
-              {trips.map((trip, index) => (
-                <div key={index} className="bg-white shadow-md rounded-lg p-4">
-                  <h3 className="text-md font-bold">{trip.name}</h3>
-                  <p className="text-gray-500">{trip.destination}</p>
-                  <p className="text-gray-600 text-sm">{trip.members}</p>
-                </div>
-              ))}
-            </div>
+        <div className="grid grid-cols-3 gap-4">
+        {archived_Trips.map((trip, index) => (
+          <div key={index} className="bg-white shadow-md rounded-lg p-4">
+            <h3 className="text-md font-bold">{trip.name}</h3>
+            <p className="text-gray-500">{trip.destination}</p>
+            <p className="text-gray-600 text-sm">{trip.members.join(", ")}</p>
           </div>
         ))}
+      </div>
       </div>
     </div>
   );

@@ -24,7 +24,7 @@ export const createTrip= async(req, res) => {
       tripSlug: slug,
       // users: [userId, ...collaboratorIds]
       users:[userId], 
-      active: true, 
+      archived: false, 
 
     });
 
@@ -108,22 +108,48 @@ try {
 // controllers/trip.controller.js
 export const addUserToTrip = async (req, res) => {
     const { tripId } = req.params;
-    const { userIdToAdd } = req.body;
-  
-    try {
-      const trip = await Trip.findById(tripId);
+    const { userId } = req.body;
+
+    try{
+      const trip = await Trip.findByIdAndUpdate(
+        tripId,
+        { archived: true }
+      )
+
       if (!trip) return res.status(404).json({ error: "Trip not found" });
-  
-      const alreadyExists = trip.users.some(user => user.toString() === userIdToAdd);
-      if (alreadyExists) return res.status(400).json({ error: "User already in trip" });
-  
-      trip.users.push(userIdToAdd);
-      await trip.save();
-  
+      const isUserInTrip = trip.users.some(user => user._id.toString() === userId);
+      if (!isUserInTrip) {
+        return res.status(403).json({ error: "Access denied: not a member of this trip" });
+      }
+
       res.status(200).json(trip);
-    } catch (err) {
-      console.error("Error adding user:", err);
+    }
+  
+    catch (err) {
+      console.error("Error archiving", err);
       res.status(500).json({ error: "Server error" });
     }
   };
+
+// archiving a trip 
+export const archiveTrip = async (req, res) => {
+  const { slug } = req.params;
+  const { userId } = req.user.id;
+
+  try {
+    const trip = await Trip.findById(tripId);
+    if (!trip) return res.status(404).json({ error: "Trip not found" });
+
+    const alreadyExists = trip.users.some(user => user.toString() === userIdToAdd);
+    if (alreadyExists) return res.status(400).json({ error: "User already in trip" });
+
+    trip.users.push(userIdToAdd);
+    await trip.save();
+
+    res.status(200).json(trip);
+  } catch (err) {
+    console.error("Error adding user:", err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
   
