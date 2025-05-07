@@ -65,7 +65,12 @@ export default function AddCollaborators({
 
   // set collaborators property in parent's form
   useEffect(() => {
-    setCollaborators(inputValue.trim() ? [...emails, inputValue] : emails);
+    const collaborators = inputValue.trim() ? [...emails, inputValue] : emails;
+    const validated = [...new Set(collaborators)].filter((c) =>
+      validateEmail(c)
+    );
+    setCollaborators(validated);
+    console.log(validated)
   }, [emails, inputValue]);
 
   return (
