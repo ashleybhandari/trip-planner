@@ -70,7 +70,6 @@ export default function AddCollaborators({
       validateEmail(c)
     );
     setCollaborators(validated);
-    console.log(validated)
   }, [emails, inputValue]);
 
   return (
