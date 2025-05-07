@@ -17,8 +17,8 @@ export default function AddCollaborators({
   const inputRef = useRef<HTMLInputElement>(null);
 
   // remove email when X button is clicked
-  const handleDeleteEmail = (email: string) => {
-    setEmails((prev) => prev.filter((e) => e !== email));
+  const handleDeleteEmail = (index: number) => {
+    setEmails((prev) => prev.filter((e, i) => i !== index));
   };
 
   // handle input changes
@@ -87,9 +87,9 @@ export default function AddCollaborators({
         )}
       >
         <ul className="w-full flex flex-wrap items-center gap-1">
-          {emails.map((e) => (
-            <li key={e}>
-              <Email onDeleteEmail={() => handleDeleteEmail(e)}>{e}</Email>
+          {emails.map((e, i) => (
+            <li key={e + i}>
+              <Email onDeleteEmail={() => handleDeleteEmail(i)}>{e}</Email>
             </li>
           ))}
           <li className="grow">
