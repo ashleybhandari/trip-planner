@@ -22,10 +22,9 @@ type checklistItem = {
 
 
 const ChecklistApp = () => {
-  const { tripId } = useParams(); 
+  const { tripSlug } = useParams(); 
   const { checklistId } = useParams(); 
   const token = localStorage.getItem("token");
-  const tripSlug= tripId;
 
   const [checklistItems, setChecklistItems] = useState<checklistItem[]>([]);
   // const [form, setForm] = useState({
