@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import LogoutButton from "@/components/auth/LogoutButton";
 import { useNavigate } from "react-router-dom";
 import AddCollaborators from "@/components/add-collaborators/AddCollaborators";
+import { fetchTripsFromServer } from "@/api/trip-actions";
 
 type Trip = {
   name: string;
@@ -21,41 +22,44 @@ type Trip = {
   slug: string;
 };
 
-const archivedTrips = {
-  2024: [
-    {
-      name: "TRIP NAME #1",
-      destination: "Destination",
-      members: "Me, Name1, Name2, Name3, and Name4",
-    },
-    {
-      name: "TRIP NAME #2",
-      destination: "Destination",
-      members: "Me, Name1, Name2, Name3",
-    },
-    {
-      name: "TRIP NAME #3",
-      destination: "Destination",
-      members: "Me, Name1",
-    },
-  ],
-  2023: [
-    {
-      name: "TRIP NAME #1",
-      destination: "Destination",
-      members: "Me, Name1, Name2, Name3, and Name4",
-    },
-    {
-      name: "TRIP NAME #2",
-      destination: "Destination",
-      members: "Me, Name1, Name2, Name3",
-    },
-  ],
-};
+// const archivedTrips = {
+//   2024: [
+//     {
+//       name: "TRIP NAME #1",
+//       destination: "Destination",
+//       members: "Me, Name1, Name2, Name3, and Name4",
+//     },
+//     {
+//       name: "TRIP NAME #2",
+//       destination: "Destination",
+//       members: "Me, Name1, Name2, Name3",
+//     },
+//     {
+//       name: "TRIP NAME #3",
+//       destination: "Destination",
+//       members: "Me, Name1",
+//     },
+//   ],
+//   2023: [
+//     {
+//       name: "TRIP NAME #1",
+//       destination: "Destination",
+//       members: "Me, Name1, Name2, Name3, and Name4",
+//     },
+//     {
+//       name: "TRIP NAME #2",
+//       destination: "Destination",
+//       members: "Me, Name1, Name2, Name3",
+//     },
+//   ],
+// };
 
 const DashboardView = () => {
   const navigate = useNavigate();
   const [trips, setTrips] = useState<Trip[]>([]);
+  // const [activeTrips, setActiveTrips] = useState<Trip[]>([]);
+  const [archivedTrips, setArchivedTrips] = useState<Trip[]>([]);
+
   const [form, setForm] = useState({
     name: "",
     destination: "",
@@ -63,37 +67,38 @@ const DashboardView = () => {
   });
   const [open, setOpen] = useState(false);
 
-  useEffect(() => {
-    const fetchTrips = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        const serverUrl = import.meta.env.VITE_SERVER_URL;
 
-        const res = await fetch(`${serverUrl}/api/trips`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+useEffect(() => {
+  const fetchTrips = async () => {
+    try {
+      const { activeTrips, inactiveTrips } = await fetchTripsFromServer();
+      // console.log(activeTrips, archivedTrips);
+      // console.log(Array.isArray(archivedTrips));
+      const formatTrip = (trip: any) => ({
+        name: trip.tripName,
+        destination: trip.destinations,
+        members: trip.users.map(
+          (u: any) => u.name || u.email || ""
+        ),
+        slug: trip.tripSlug,
+       
+      });
 
-        const data = await res.json();
-        const formattedTrips: Trip[] = data.map((trip: any) => ({
-          name: trip.tripName,
-          destination: trip.destinations,
-          members: trip.users.map(
-            (u: any) => u.name || u.email || "Collaborator"
-          ),
-          slug: trip.tripSlug,
-        }));
 
-        setTrips(formattedTrips);
-        console.log(data);
-      } catch (err) {
-        console.error("Failed to load trips:", err);
-      }
-    };
 
-    fetchTrips();
-  }, []);
+      setTrips(activeTrips.map(formatTrip));
+      // setArchivedTrips([...activeTrips.map(formatTrip)]);
+      setArchivedTrips(inactiveTrips.map(formatTrip));
+    } catch (err) {
+      console.error("Failed to load trips:", err);
+    }
+  };
+
+  fetchTrips();
+}, []);
+
+
+
 
   const setCollaborators = (collaborators: string[]) => {
     setForm((prev) => ({ ...prev, collaborators }));
@@ -212,8 +217,8 @@ const DashboardView = () => {
 
         {/* Archive Section */}
         <h2 className="text-lg font-semibold text-center mt-8 mb-4">archive</h2>
-        {Object.entries(archivedTrips).map(([year, trips]) => (
-          <div key={year}>
+        
+          {/* <div key={year}>
             <h3 className="text-gray-500 font-semibold mb-2">– {year} –</h3>
             <div className="grid grid-cols-3 gap-4">
               {trips.map((trip, index) => (
@@ -224,10 +229,22 @@ const DashboardView = () => {
                 </div>
               ))}
             </div>
-          </div>
-        ))}
+          </div> */}
+            {archivedTrips.map((trip, index) => (
+            <div
+              key={index}
+              className="bg-white shadow-md rounded-lg p-4 cursor-pointer hover:shadow-lg"
+              onClick={() => navigate(`/trip/${trip.slug}`)}
+            >
+              <h3 className="text-md font-bold">{trip.name}</h3>
+              <p className="text-gray-500">{trip.destination}</p>
+              <p className="text-gray-600 text-sm">{trip.members.join(", ")}</p>
+            </div>
+          ))}
+        </div>
+      
       </div>
-    </div>
+   
   );
 };
 

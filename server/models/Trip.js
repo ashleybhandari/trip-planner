@@ -27,31 +27,30 @@ const tripSchema= new Schema({
   }
 
   ], 
-  dates:
-  { startDate: {
-     type: Date, 
-     required: false,
-  }, 
-  endDate: 
-  {
-    type: Date, 
-    required: false,
-  }
 
-     
-  }, 
-  status:
+status:
   {
     type: Boolean, 
     required: false
-  },
-//   users_names:
-//   [{
-//     type: strig, 
-//     ref: User
-//   }
+},
 
-//   ], 
+destination:{
+  type: String,
+  default: "",
+  required: false,
+}, 
+dates:
+{
+  type: String, 
+  default:"",
+  required: false
+}, 
+collaborators:
+{
+  type: String, 
+  default:"",
+  required: false
+},
   checklists:
   [
     {
