@@ -10,6 +10,7 @@ import TripLayoutView from "@/components/layout/TripLayout";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AuthCallbackView from "@/views/AuthCallbackView";
 import DashboardView from "./views/DashboardView";
+import InviteView from "./views/TripInviteView";
 
 
 function App() {
@@ -21,13 +22,15 @@ function App() {
         <Route element={<ProtectedRoute />}>
         {/* add all protected routes here */}
         <Route path="dashboard" element={<DashboardView />} />
-        <Route path="trip/:tripId" element={<TripLayoutView />}>
+        <Route path="trip/:tripSlug" element={<TripLayoutView />}>
           <Route path="summary" element={<MyTripView />} />
           <Route path="itinerary" element={<ItineraryView />} />
           <Route path="map" element={<MapView />} />
           <Route path="budget" element={<BudgetView />} />
           <Route path="checklist/:checklistId" element={<ChecklistView />} />
+          
         </Route>
+        <Route path="/trip/invite" element={<InviteView/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
