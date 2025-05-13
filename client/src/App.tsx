@@ -10,7 +10,7 @@ import TripLayoutView from "@/components/layout/TripLayout";
 import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AuthCallbackView from "@/views/AuthCallbackView";
 import DashboardView from "./views/DashboardView";
-
+import PollsApp from "@/components/Polls/PollsApp";
 
 function App() {
   return (
@@ -22,6 +22,7 @@ function App() {
         {/* add all protected routes here */}
         <Route path="dashboard" element={<DashboardView />} />
         <Route path="trip/:tripId" element={<TripLayoutView />}>
+         <Route path="Polls/:PollsApp" element={<PollsApp />}></Route>
           <Route path="summary" element={<MyTripView />} />
           <Route path="itinerary" element={<ItineraryView />} />
           <Route path="map" element={<MapView />} />
