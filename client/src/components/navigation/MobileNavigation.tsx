@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import { useContext, useEffect, useState } from "react";
 import { AlignLeft, X } from "lucide-react";
 import { Navigation } from "./Navigation";
