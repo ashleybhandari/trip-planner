@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import Email from "./Email";
+import { validateEmail } from "./validate-email";
 
 type AddCollaboratorsProps = {
   setCollaborators: (collaborators: string[]) => void;
@@ -16,8 +17,8 @@ export default function AddCollaborators({
   const inputRef = useRef<HTMLInputElement>(null);
 
   // remove email when X button is clicked
-  const handleDeleteEmail = (email: string) => {
-    setEmails((prev) => prev.filter((e) => e !== email));
+  const handleDeleteEmail = (index: number) => {
+    setEmails((prev) => prev.filter((e, i) => i !== index));
   };
 
   // handle input changes
@@ -58,13 +59,17 @@ export default function AddCollaborators({
       setInputValue(input.slice(position + 1)); // text after position
       return true;
     }
-    
+
     return false;
   };
 
   // set collaborators property in parent's form
   useEffect(() => {
-    setCollaborators(inputValue.trim() ? [...emails, inputValue] : emails);
+    const collaborators = inputValue.trim() ? [...emails, inputValue] : emails;
+    const validated = [...new Set(collaborators)].filter((c) =>
+      validateEmail(c)
+    );
+    setCollaborators(validated);
   }, [emails, inputValue]);
 
   return (
@@ -82,9 +87,9 @@ export default function AddCollaborators({
         )}
       >
         <ul className="w-full flex flex-wrap items-center gap-1">
-          {emails.map((e) => (
-            <li key={e}>
-              <Email onDeleteEmail={() => handleDeleteEmail(e)}>{e}</Email>
+          {emails.map((e, i) => (
+            <li key={e + i}>
+              <Email onDeleteEmail={() => handleDeleteEmail(i)}>{e}</Email>
             </li>
           ))}
           <li className="grow">
@@ -103,6 +108,11 @@ export default function AddCollaborators({
           </li>
         </ul>
       </div>
+      {emails.some((e) => !validateEmail(e)) && (
+        <div className="text-xs text-error m-1">
+          Warning: One or more of the above emails is invalid.
+        </div>
+      )}
     </div>
   );
 }
