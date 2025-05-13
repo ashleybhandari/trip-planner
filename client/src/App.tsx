@@ -11,7 +11,6 @@ import ProtectedRoute from "@/components/auth/ProtectedRoute";
 import AuthCallbackView from "@/views/AuthCallbackView";
 import DashboardView from "./views/DashboardView";
 
-
 function App() {
   return (
     <BrowserRouter>
@@ -21,6 +20,7 @@ function App() {
         <Route element={<ProtectedRoute />}>
         {/* add all protected routes here */}
         <Route path="dashboard" element={<DashboardView />} />
+        <Route path="maps" element={<MapView/>} />
         <Route path="trip/:tripId" element={<TripLayoutView />}>
           <Route path="summary" element={<MyTripView />} />
           <Route path="itinerary" element={<ItineraryView />} />

@@ -6,6 +6,10 @@
   ],
   "compilerOptions": {
     "baseUrl": ".",
+     "jsx": "react-jsx", 
+    "moduleResolution": "node",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "paths": {
       "@/*": ["./src/*"]
     }
