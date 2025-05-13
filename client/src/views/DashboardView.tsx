@@ -65,7 +65,7 @@ const DashboardView = () => {
     <div className="flex flex-col w-full h-full justify-center bg-surface">
       <nav className="bg-primary text-on-primary p-4 flex justify-between items-center">
         <h1 className="text-xl font-bold">trip planner</h1>
-        <LogoutButton className="h-10 w-24 text-on-surface bg-surface hover:bg-surface/90" />
+        <LogoutButton className="h-9 w-20 text-sm text-on-surface bg-surface hover:bg-surface/90 active:bg-surface" />
       </nav>
       <div className="w-fit flex flex-col items-center self-center gap-20 my-10">
         <div>
