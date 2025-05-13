@@ -3,12 +3,15 @@ import { useEffect, useState } from "react";
 import LogoutButton from "@/components/auth/LogoutButton";
 
 import { Trip } from "@/types/Trip";
-import { MOCK_ARCHIVED_TRIPS } from "@/mock/mock-archived";
+import { MOCK_ARCHIVED_TRIPS } from "@/mock/mock-archived-trips";
 import CreateTripDialog from "@/components/dashboard/CreateTripDialog";
 import DashboardCard from "@/components/dashboard/DashboardCard";
+import { sortTripsByDate } from "@/utils/sort-trips-by-date";
 
 const DashboardView = () => {
   const [trips, setTrips] = useState<Trip[]>([]);
+  const [archived, setArchived] = useState<Map<number, Trip[]>>(new Map());
+
   const HEADER_CLASSES =
     "text-secondary text-xl font-semibold text-center mb-10";
 
@@ -32,8 +35,10 @@ const DashboardView = () => {
             (u: any) => u.name || u.email || "Collaborator"
           ),
           slug: trip.tripSlug,
+          creationDate: trip.dates?.creationDate,
         }));
 
+        sortTripsByDate(formattedTrips);
         setTrips(formattedTrips);
       } catch (err) {
         console.error("Failed to load trips:", err);
@@ -41,6 +46,19 @@ const DashboardView = () => {
     };
 
     fetchTrips();
+  }, []);
+
+  useEffect(() => {
+    const archivedTrips = new Map<number, Trip[]>();
+
+    MOCK_ARCHIVED_TRIPS.forEach((trip) => {
+      const year = trip.creationDate.getFullYear();
+      const trips = archivedTrips.get(year) ?? [];
+      archivedTrips.set(year, [...trips, trip]);
+    });
+
+    archivedTrips.forEach((trip) => sortTripsByDate(trip));
+    setArchived(archivedTrips);
   }, []);
 
   return (
@@ -67,8 +85,11 @@ const DashboardView = () => {
         </div>
         <div>
           <h2 className={HEADER_CLASSES}>archive</h2>
-          {Object.entries(MOCK_ARCHIVED_TRIPS).map(([year, trips]) => (
-            <div key={year} className="flex flex-col lg:flex-row items-center gap-6 mb-4">
+          {[...archived].map(([year, trips]) => (
+            <div
+              key={year.toString()}
+              className="flex flex-col lg:flex-row items-center gap-6 mb-10 lg:mb-4"
+            >
               <h3 className="text-outline font-semibold">- {year} -</h3>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {trips.map((trip) => (
