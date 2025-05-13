@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import PageSection from "@/components/ui/PageSection";

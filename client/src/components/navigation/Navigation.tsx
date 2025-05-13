@@ -1,4 +1,4 @@
-import { cn } from "@/lib/utils";
+import { cn } from "@/utils/cn";
 import { NavChecklists } from "./NavChecklists";
 import { NavFooter } from "./NavFooter";
 import { NavPages } from "./NavPages";
