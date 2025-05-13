@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 
 import LogoutButton from "@/components/auth/LogoutButton";
+import TripArchive from "@/components/dashboard/TripArchive";
 
 import { Trip } from "@/types/Trip";
 import { MOCK_ARCHIVED_TRIPS } from "@/mock/mock-archived-trips";
@@ -70,6 +71,7 @@ const DashboardView = () => {
       <div className="w-fit flex flex-col items-center self-center gap-20 my-10">
         <div>
           <h2 className={HEADER_CLASSES}>my trips</h2>
+          <TripArchive />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 justify-center">
             <CreateTripDialog setTrips={setTrips} />
             {trips.map((trip) => (
