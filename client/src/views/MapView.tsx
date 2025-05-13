@@ -3,16 +3,24 @@ import React from 'react';
 const containerStyle: React.CSSProperties = {
   width: '100%',
   height: '500px',
-  backgroundColor: '#e0e0e0',
-  display: 'flex',
-  flexDirection: 'column',
-  alignItems: 'center',
-  justifyContent: 'center',
-  color: '#666',
-  fontSize: '1.2rem',
+  backgroundImage: 'url("https://maps.gstatic.com/tactile/pane/default_geocode-2x.png")', // Placeholder static map
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
   border: '1px solid #ccc',
   borderRadius: '8px',
   position: 'relative',
+};
+
+const overlayTextStyle: React.CSSProperties = {
+  position: 'absolute',
+  top: '10px',
+  left: '50%',
+  transform: 'translateX(-50%)',
+  backgroundColor: 'rgba(255, 255, 255, 0.8)',
+  padding: '6px 12px',
+  borderRadius: '6px',
+  fontSize: '1rem',
+  color: '#333',
 };
 
 const pinStyle: React.CSSProperties = {
@@ -30,7 +38,9 @@ const pinStyle: React.CSSProperties = {
 const MapView: React.FC = () => {
   return (
     <div style={containerStyle}>
-      <div>Map Placeholder (Google Maps will appear here in production)</div>
+      <div style={overlayTextStyle}>
+        Map Placeholder (Google Maps will appear here in production)
+      </div>
       <div style={pinStyle} title="Marker Placeholder" />
     </div>
   );
