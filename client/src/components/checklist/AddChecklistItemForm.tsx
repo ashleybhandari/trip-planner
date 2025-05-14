@@ -18,28 +18,24 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { addExpenseFormSchema } from "./add-expense-form-schema";
+import { addChecklistItemFormSchema } from "./add-checklist-item-form-schema";
 
-type AddExpenseFormProps = {
+type AddChecklistItemFormProps = {
   collaborators: string[];
-  onSubmit: (values: z.infer<typeof addExpenseFormSchema>) => void;
+  onSubmit: (values: z.infer<typeof addChecklistItemFormSchema>) => void;
 };
 
-export default function AddExpenseForm({
+export default function AddChecklistItemForm({
   collaborators,
   onSubmit,
-}: AddExpenseFormProps) {
-  const form = useForm<z.infer<typeof addExpenseFormSchema>>({
-    resolver: zodResolver(addExpenseFormSchema),
+}: AddChecklistItemFormProps) {
+  const form = useForm<z.infer<typeof addChecklistItemFormSchema>>({
+    resolver: zodResolver(addChecklistItemFormSchema),
   });
 
-  const handleSubmit = (values: z.infer<typeof addExpenseFormSchema>) => {
+  const handleSubmit = (values: z.infer<typeof addChecklistItemFormSchema>) => {
     onSubmit(values);
-    form.reset({
-      name: "",
-      amount: undefined,
-      payer: "",
-    });
+    form.reset({ label: "", assignedTo: "" });
   };
 
   return (
@@ -50,10 +46,10 @@ export default function AddExpenseForm({
       >
         <FormField
           control={form.control}
-          name="name"
+          name="label"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>To-do</FormLabel>
               <FormControl>
                 <Input {...field} />
               </FormControl>
@@ -63,23 +59,10 @@ export default function AddExpenseForm({
         />
         <FormField
           control={form.control}
-          name="amount"
+          name="assignedTo"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Amount</FormLabel>
-              <FormControl>
-                <Input {...field} value={field.value ?? ""} />
-              </FormControl>
-              <FormMessage className="text-error" />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="payer"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Payer</FormLabel>
+              <FormLabel>Assign to (optional)</FormLabel>
               <Select
                 onValueChange={field.onChange}
                 defaultValue={field.value}
@@ -87,10 +70,16 @@ export default function AddExpenseForm({
               >
                 <FormControl className="min-w-48">
                   <SelectTrigger>
-                    <SelectValue placeholder="Select who paid" />
+                    <SelectValue placeholder="Select assignee" />
                   </SelectTrigger>
                 </FormControl>
                 <SelectContent className="bg-white">
+                  <SelectItem
+                    value="unassigned"
+                    className="hover:bg-secondary/10"
+                  >
+                    (Unassigned)
+                  </SelectItem>
                   {collaborators.map((name) => (
                     <SelectItem value={name} className="hover:bg-secondary/10">
                       {name}
@@ -98,7 +87,6 @@ export default function AddExpenseForm({
                   ))}
                 </SelectContent>
               </Select>
-              <FormMessage className="text-error" />
             </FormItem>
           )}
         />
@@ -107,7 +95,7 @@ export default function AddExpenseForm({
           variant="secondary"
           className="text-on-primary mt-[22px]"
         >
-          Add Expense
+          Add Item
         </Button>
       </form>
     </Form>

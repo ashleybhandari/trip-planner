@@ -132,7 +132,7 @@ export default function MyTripView() {
           <BigBox>
             <Card
               title="Destination"
-              className="flex flex-col w-full p-4 bg-primary-container text-on-primary-container"
+              className="flex flex-col w-full p-4"
             >
               <TextArea
                 value={destinationText}
@@ -143,7 +143,7 @@ export default function MyTripView() {
             </Card>
             <Card
               title="Dates"
-              className="flex flex-col w-full p-4 bg-primary-container text-on-primary-container"
+              className="flex flex-col w-full p-4"
             >
               <TextArea
                 placeholder="scribble down a few dates and see what sticks"
@@ -152,7 +152,7 @@ export default function MyTripView() {
             </Card>
             <Card
               title="Collaborators"
-              className="flex flex-col w-full p-4 bg-primary-container text-on-primary-container"
+              className="flex flex-col w-full p-4"
             >
               <TextArea
                value={collaboratorsText}

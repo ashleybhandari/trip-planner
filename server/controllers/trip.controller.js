@@ -5,7 +5,7 @@ import {sendInviteEmail} from "../services/emailService.js"
 import jwt from 'jsonwebtoken';
 
 // ---------- API calls for Trips ----------
-export const createTrip= async(req, res) => {
+export const createTrip = async (req, res) => {
   const { tripName, destinations, collaboratorEmails = [] } = req.body;
   const userId = req.user.id;
 
@@ -15,8 +15,8 @@ export const createTrip= async(req, res) => {
     const slug = `${baseSlug}-${nanoid()}`;
 
     // Find collaborators from emails
-  //   const collaborators = await User.find({ email: { $in: collaboratorEmails } });
-  //   const collaboratorIds = collaborators.map(user => user._id);
+    //   const collaborators = await User.find({ email: { $in: collaboratorEmails } });
+    //   const collaboratorIds = collaborators.map(user => user._id);
 
     // Create the trip 
 
@@ -36,7 +36,6 @@ export const createTrip= async(req, res) => {
       await sendInviteEmail(email, newTrip._id.toString());
     }
     res.status(201).json(newTrip);
-
   } catch (err) {
     console.error("Error creating trip:", err);
     res.status(500).json({ error: "Failed to create trip" });
@@ -50,7 +49,10 @@ export const getTrips = async (req, res) => {
 
   try {
     // Find trips where user is a member
-    const trips = await Trip.find({ users: userId }).populate("users", "name email");
+    const trips = await Trip.find({ users: userId }).populate(
+      "users",
+      "name email"
+    );
 
     res.json(trips);
   } catch (err) {
@@ -88,7 +90,6 @@ export const deleteTrip = async(req, res)=>
 export const getTripByID= async (req, res) => {
   const { tripId } = req.params;
   const userId = req.user.id;
-  
 
   try {
     const trip = await Trip.findById(tripId).populate("users", "name email");
@@ -101,7 +102,9 @@ export const getTripByID= async (req, res) => {
 
     const isUserInTrip = trip.users.some(user => user._id.toString() === userId);
     if (!isUserInTrip) {
-      return res.status(403).json({ error: "Access denied: not a member of this trip" });
+      return res
+        .status(403)
+        .json({ error: "Access denied: not a member of this trip" });
     }
 
     res.json(trip);
@@ -124,7 +127,9 @@ export const changeTripStatus = async (req, res) => {
 
     const isUserInTrip = trip.users.some(user => user.toString() === userId);
     if (!isUserInTrip) {
-      return res.status(403).json({ error: "Access denied: not a member of this trip" });
+      return res
+        .status(403)
+        .json({ error: "Access denied: not a member of this trip" });
     }
 
     trip.status = false;

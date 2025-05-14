@@ -1,6 +1,11 @@
+import { cn } from "@/utils/cn";
 import { NavItem } from "@/components/navigation/NavItem";
 
-export default function LogoutButton() {
+type LogoutButtonProps = {
+  className: string;
+};
+
+export default function LogoutButton({ className }: LogoutButtonProps) {
   const handleLogout = () => {
     localStorage.removeItem("token");
     const serverUrl = import.meta.env.VITE_SERVER_URL;
@@ -11,7 +16,10 @@ export default function LogoutButton() {
   return (
     <NavItem
       onClick={handleLogout}
-      className="font-medium justify-center bg-secondary-container text-on-secondary-container hover:bg-error-container active:bg-error-container/90"
+      className={cn(
+        "font-medium justify-center bg-secondary-container text-on-secondary-container hover:bg-error-container active:bg-error-container/90",
+        className
+      )}
     >
       Sign Out
     </NavItem>

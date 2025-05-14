@@ -1,7 +1,7 @@
-import mongoose from 'mongoose';
-import User from './User.js';
-import {Checklist} from './Checklist.js'
-import {BudgetItem} from "./Budget.js"
+import mongoose from "mongoose";
+import User from "./User.js";
+import { Checklist } from "./Checklist.js";
+import { BudgetItem } from "./Budget.js";
 const { Schema } = mongoose;
 
 const tripSchema= new Schema({
@@ -45,6 +45,12 @@ dates:
   default:"",
   required: false
 }, 
+creationDate:
+{
+  type: String, 
+  default:"",
+  required: false
+}, 
 collaborators:
 {
   type: String, 
@@ -70,6 +76,5 @@ collaborators:
 },
   {timestamps: true}
 );
-
 
 export default mongoose.model("Trip", tripSchema);
