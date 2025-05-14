@@ -4,5 +4,5 @@ export type Trip = {
   destination: string;
   members: string[];
   slug: string;
-  creationDate: Date;
+  createdAt: Date;
 };

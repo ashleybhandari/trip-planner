@@ -25,20 +25,23 @@ const DashboardView = () => {
           destination: trip.destinations,
           members: trip.users.map((u: any) => u.name || u.email || ""),
           slug: trip.tripSlug,
-          creationDate: trip.creationDate,
+          createdAt: new Date(trip.createdAt),
         });
 
-        const archivedTrips = new Map<number, Trip[]>();
+        const trips = activeTrips.map(formatTrip);
+        sortTripsByDate(trips);
+        setTrips(trips);
 
+        const archivedTrips = new Map<number, Trip[]>();
+        
+        console.log(inactiveTrips)
         inactiveTrips.map(formatTrip).forEach((trip) => {
-          const year = trip.creationDate.getFullYear();
+          const year = trip.createdAt.getFullYear();
           const trips = archivedTrips.get(year) ?? [];
           archivedTrips.set(year, [...trips, trip]);
         });
 
         archivedTrips.forEach((trip) => sortTripsByDate(trip));
-
-        setTrips(activeTrips.map(formatTrip));
         setArchived(archivedTrips);
       } catch (err) {
         console.error("Failed to load trips:", err);
