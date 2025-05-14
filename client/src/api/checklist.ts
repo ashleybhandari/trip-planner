@@ -12,9 +12,7 @@ export async function getChecklistsByTripSlug(tripSlug: string, token: string) {
       throw new Error("Failed to fetch checklists");
     }
 
-    console.log(res);
     const data = await res.json();
-    console.log(data);
     return data;
   
     // return await res.json();

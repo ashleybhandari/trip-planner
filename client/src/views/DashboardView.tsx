@@ -34,7 +34,6 @@ const DashboardView = () => {
 
         const archivedTrips = new Map<number, Trip[]>();
         
-        console.log(inactiveTrips)
         inactiveTrips.map(formatTrip).forEach((trip) => {
           const year = trip.createdAt.getFullYear();
           const trips = archivedTrips.get(year) ?? [];

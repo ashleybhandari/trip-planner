@@ -165,7 +165,8 @@ export const updateSummaryField = async (req, res) => {
   const { slug } = req.params;
   const { field, value } = req.body;
   const userId = req.user.id;
-  const allowedFields = ["destination", "dates", "collaborators", "name"];
+  const allowedFields = ["destination", "dates", "collaborators", "tripName"];
+
   if (!allowedFields.includes(field)) {
     return res.status(400).json({ error: "Invalid field" });
   }
@@ -176,8 +177,9 @@ export const updateSummaryField = async (req, res) => {
       { $set: { [field]: value } },
       { new: true }
     );
-    console.log("debounce", trip.collaborators);
+    // console.log("debounce", trip.collaborators);
 
+    console.log("trip", trip)
     if (!trip) return res.status(404).json({ error: "Trip not found" });
     const isUserInTrip = trip.users.some(
       (user) => user._id.toString() === userId
@@ -217,6 +219,7 @@ export const getSummary = async (req, res) => {
     }
     res.json({
       tripId: slug,
+      name: trip.tripName,
       collaborators: trip.collaborators,
       destination: trip.destination,
     });

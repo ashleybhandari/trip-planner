@@ -106,6 +106,10 @@ export default function MyTripView() {
   ); 
 
   useEffect(() => {
+    if (!isLoading) debouncedSave("tripName", tripDetails.name);
+  }, [tripDetails.name]);
+
+  useEffect(() => {
     if (!isLoading) debouncedSave("destination", destinationText);
   }, [destinationText]);
 
