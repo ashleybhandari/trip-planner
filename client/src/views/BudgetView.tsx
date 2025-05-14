@@ -35,8 +35,7 @@ export default function MyTripView() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const users = Object.values(MOCK_USERS);
-  const { tripId } = useParams();
-  const tripSlug = tripId;
+  const { tripSlug } = useParams();
   const token = localStorage.getItem("token");
 
   // Total amount collectively spent

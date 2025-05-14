@@ -13,9 +13,9 @@ export const initSocket = (server) => {
   ioInstance.on("connection", (socket) => {
     console.log("Client connected:", socket.id);
 
-    socket.on("join-trip", (tripId) => {
-      console.log(`Joining trip room: ${tripId}`);
-      socket.join(tripId);
+    socket.on("join-trip", (tripSlug) => {
+      console.log(`Joining trip room: ${tripSlug}`);
+      socket.join(tripSlug);
     });
 
     socket.on("disconnect", () => {

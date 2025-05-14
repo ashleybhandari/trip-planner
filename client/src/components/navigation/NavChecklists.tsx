@@ -21,8 +21,8 @@ export function NavChecklists() {
   const { selected, setSelected, checklists, setChecklists } =
     useContext(NavContext);
   const navigate = useNavigate();
-  const { tripId } = useParams(); 
-  const tripSlug= tripId;
+  const { tripSlug } = useParams(); 
+
 
   useEffect(() => {
     const fetchChecklists = async () => {
