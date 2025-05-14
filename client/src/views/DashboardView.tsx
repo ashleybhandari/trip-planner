@@ -52,7 +52,7 @@ const DashboardView = () => {
   }, []);
 
   return (
-    <div className="flex flex-col w-full h-full justify-center bg-surface">
+    <div className="flex flex-col w-full h-full justify-center">
       <nav className="bg-primary text-on-primary p-4 flex justify-between items-center">
         <h1 className="text-xl font-bold">trip planner</h1>
         <LogoutButton className="h-9 w-20 text-sm text-on-surface bg-surface hover:bg-surface/90 active:bg-surface" />
