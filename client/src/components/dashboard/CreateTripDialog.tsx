@@ -67,6 +67,7 @@ export default function CreateTripDialog({ setTrips }: CreateTripDialogProps) {
           (u: any) => u.name || u.email || "Collaborator"
         ),
         slug: newTrip.tripSlug,
+        createdAt: newTrip.createdAt,
       };
 
       setTrips((prev) => [trip, ...prev]);

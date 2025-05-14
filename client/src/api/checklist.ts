@@ -12,18 +12,22 @@ export async function getChecklistsByTripSlug(tripSlug: string, token: string) {
       throw new Error("Failed to fetch checklists");
     }
 
-    console.log(res);
-    const data = await res.json();
-    console.log(data);
-    return data;
-  
-    // return await res.json();
-  }
-  
+  const data = await res.json();
+  return data;
 
-export async function createChecklistByTripSlug(tripSlug: string, name: string, token: string) {
-    const serverUrl = import.meta.env.VITE_SERVER_URL;
-    const res = await fetch(`${serverUrl}/api/trips/slug/${tripSlug}/checklists`, {
+  // return await res.json();
+}
+
+export async function createChecklistByTripSlug(
+  tripSlug: string,
+  name: string,
+  token: string
+) {
+  const serverUrl = import.meta.env.VITE_SERVER_URL;
+  
+  const res = await fetch(
+    `${serverUrl}/api/trips/slug/${tripSlug}/checklists`,
+    {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
