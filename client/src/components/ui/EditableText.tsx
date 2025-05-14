@@ -53,6 +53,10 @@ export default function EditableText({
     if (isEditing) inputRef.current?.focus();
   }, [isEditing]);
 
+  useEffect(() => {
+    setValue(children?.toString());
+  }, [children]);
+
   return (
     <>
       {isEditing ? (

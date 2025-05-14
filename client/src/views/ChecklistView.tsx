@@ -21,13 +21,11 @@ const socket: Socket = io("http://localhost:3000", {
 });
 
 const ChecklistApp = () => {
-  const { tripSlug } = useParams(); 
-  const { checklistId } = useParams(); 
+  const { tripSlug } = useParams();
+  const { checklistId } = useParams();
   const token = localStorage.getItem("token");
 
-  const [checklistName, setChecklistName] = useState(
-    localStorage.getItem("checkListName") ?? "My checklist"
-  );
+  const [checklistName, setChecklistName] = useState("my checklist");
   const [checklistItems, setChecklistItems] = useState<ChecklistItem[]>([]);
 
   const fetchChecklistItems = async () => {
@@ -70,6 +68,7 @@ const ChecklistApp = () => {
       socket.on("checklist-updated", handleChecklistUpdate);
 
       fetchChecklistItems();
+
       return () => {
         socket.off("checklist-updated", handleChecklistUpdate);
       };
@@ -128,7 +127,7 @@ const ChecklistApp = () => {
         collaborators={Object.values(MOCK_USERS)}
         onSubmit={handleAddItem}
       />
-      <PageSection className="grow flex flex-col gap-3 justify-start p-5 w-full">
+      <PageSection className="grow flex flex-col justify-start p-5 w-full">
         {checklistItems.length > 0 ? (
           checklistItems.map((item) => (
             <Item

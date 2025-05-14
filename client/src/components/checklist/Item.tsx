@@ -17,7 +17,12 @@ export default function Item({
   onDelete,
 }: ItemProps) {
   return (
-    <div className="flex gap-4 items-center w-full">
+    <div
+      className={cn("flex gap-4 items-center w-full rounded-lg p-2", {
+        "hover:bg-gray-200": checked,
+        "hover:bg-secondary-container": !checked,
+      })}
+    >
       <button
         onClick={onCheck}
         className="hover:text-primary active:text-primary/80 cursor-pointer"

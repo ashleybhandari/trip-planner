@@ -92,7 +92,7 @@ export default function AddExpenseForm({
                 </FormControl>
                 <SelectContent className="bg-white">
                   {collaborators.map((name) => (
-                    <SelectItem value={name} className="hover:bg-secondary/10">
+                    <SelectItem key={name} value={name} className="hover:bg-secondary/10">
                       {name}
                     </SelectItem>
                   ))}
