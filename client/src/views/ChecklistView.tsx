@@ -21,10 +21,9 @@ const socket: Socket = io("http://localhost:3000", {
 });
 
 const ChecklistApp = () => {
-  const { tripId } = useParams();
-  const { checklistId } = useParams();
+  const { tripSlug } = useParams(); 
+  const { checklistId } = useParams(); 
   const token = localStorage.getItem("token");
-  const tripSlug = tripId;
 
   const [checklistName, setChecklistName] = useState(
     localStorage.getItem("checkListName") ?? "My checklist"

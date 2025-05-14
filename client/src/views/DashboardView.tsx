@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 
 import LogoutButton from "@/components/auth/LogoutButton";
+import { fetchTripsFromServer } from "@/api/trip-actions";
 
 import { Trip } from "@/types/Trip";
-import { MOCK_ARCHIVED_TRIPS } from "@/mock/mock-archived-trips";
 import CreateTripDialog from "@/components/dashboard/CreateTripDialog";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import { sortTripsByDate } from "@/utils/sort-trips-by-date";
@@ -18,47 +18,37 @@ const DashboardView = () => {
   useEffect(() => {
     const fetchTrips = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const serverUrl = import.meta.env.VITE_SERVER_URL;
+        const { activeTrips, inactiveTrips } = await fetchTripsFromServer();
 
-        const res = await fetch(`${serverUrl}/api/trips`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const data = await res.json();
-        const formattedTrips: Trip[] = data.map((trip: any) => ({
+        const formatTrip = (trip: any) => ({
           name: trip.tripName,
           destination: trip.destinations,
-          members: trip.users.map(
-            (u: any) => u.name || u.email || "Collaborator"
-          ),
+          members: trip.users.map((u: any) => u.name || u.email || ""),
           slug: trip.tripSlug,
-          creationDate: trip.dates?.creationDate,
-        }));
+          createdAt: new Date(trip.createdAt),
+        });
 
-        sortTripsByDate(formattedTrips);
-        setTrips(formattedTrips);
+        const trips = activeTrips.map(formatTrip);
+        sortTripsByDate(trips);
+        setTrips(trips);
+
+        const archivedTrips = new Map<number, Trip[]>();
+        
+        console.log(inactiveTrips)
+        inactiveTrips.map(formatTrip).forEach((trip) => {
+          const year = trip.createdAt.getFullYear();
+          const trips = archivedTrips.get(year) ?? [];
+          archivedTrips.set(year, [...trips, trip]);
+        });
+
+        archivedTrips.forEach((trip) => sortTripsByDate(trip));
+        setArchived(archivedTrips);
       } catch (err) {
         console.error("Failed to load trips:", err);
       }
     };
 
     fetchTrips();
-  }, []);
-
-  useEffect(() => {
-    const archivedTrips = new Map<number, Trip[]>();
-
-    MOCK_ARCHIVED_TRIPS.forEach((trip) => {
-      const year = trip.creationDate.getFullYear();
-      const trips = archivedTrips.get(year) ?? [];
-      archivedTrips.set(year, [...trips, trip]);
-    });
-
-    archivedTrips.forEach((trip) => sortTripsByDate(trip));
-    setArchived(archivedTrips);
   }, []);
 
   return (

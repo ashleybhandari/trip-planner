@@ -25,31 +25,27 @@ const tripSchema = new Schema(
         ref: User,
       },
     ],
-    dates: {
-      creationDate: {
-        type: Date,
-        required: true,
-      },
-      startDate: {
-        type: Date,
-        required: false,
-      },
-      endDate: {
-        type: Date,
-        required: false,
-      },
-    },
+
     status: {
       type: Boolean,
       required: false,
     },
-    //   users_names:
-    //   [{
-    //     type: strig,
-    //     ref: User
-    //   }
 
-    //   ],
+    destination: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    dates: {
+      type: String,
+      default: "",
+      required: false,
+    },
+    collaborators: {
+      type: String,
+      default: "",
+      required: false,
+    },
     checklists: [
       {
         type: mongoose.Schema.Types.ObjectId,
